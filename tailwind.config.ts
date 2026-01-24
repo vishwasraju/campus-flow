@@ -57,6 +57,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Status colors for workflow
+        status: {
+          pending: "hsl(var(--status-pending))",
+          "pending-foreground": "hsl(var(--status-pending-foreground))",
+          approved: "hsl(var(--status-approved))",
+          "approved-foreground": "hsl(var(--status-approved-foreground))",
+          rejected: "hsl(var(--status-rejected))",
+          "rejected-foreground": "hsl(var(--status-rejected-foreground))",
+        },
+        // CPS category colors
+        cps: {
+          research: "hsl(var(--cps-research))",
+          academics: "hsl(var(--cps-academics))",
+          industry: "hsl(var(--cps-industry))",
+          placement: "hsl(var(--cps-placement))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,25 +81,27 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "slide-in": {
+          from: { transform: "translateX(-10px)", opacity: "0" },
+          to: { transform: "translateX(0)", opacity: "1" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.3s ease-out",
+        "slide-in": "slide-in 0.3s ease-out",
       },
     },
   },
