@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CPSProvider } from "@/contexts/CPSContext";
+import { LeaveProvider } from "@/contexts/LeaveContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -12,15 +13,17 @@ import CPSEntry from "./pages/CPSEntry";
 import CPSRecords from "./pages/CPSRecords";
 import HODApprovals from "./pages/HODApprovals";
 import PrincipalApprovals from "./pages/PrincipalApprovals";
+import Leave from "./pages/Leave";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <CPSProvider>
+        <LeaveProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -40,7 +43,7 @@ const App = () => (
               {/* Placeholder routes for other modules */}
               <Route path="/circulars" element={<DashboardLayout><ComingSoon title="Circulars" /></DashboardLayout>} />
               <Route path="/events" element={<DashboardLayout><ComingSoon title="Events Calendar" /></DashboardLayout>} />
-              <Route path="/leave" element={<DashboardLayout><ComingSoon title="Leave Management" /></DashboardLayout>} />
+              <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
               <Route path="/timetable" element={<DashboardLayout><ComingSoon title="Timetable Creator" /></DashboardLayout>} />
               <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
               <Route path="/reports" element={<DashboardLayout><ComingSoon title="Reports" /></DashboardLayout>} />
@@ -53,6 +56,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
+        </LeaveProvider>
       </CPSProvider>
     </AuthProvider>
   </QueryClientProvider>
