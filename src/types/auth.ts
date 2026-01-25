@@ -15,6 +15,8 @@ export type Designation =
   | 'Head of Department'
   | 'Principal';
 
+export type Post = 'Faculty' | 'Head of Department' | 'Principal';
+
 export interface User {
   id: string;
   collegeId: string;
@@ -48,6 +50,19 @@ export const DESIGNATIONS: { value: Designation; label: string }[] = [
   { value: 'Professor', label: 'Professor' },
   { value: 'Head of Department', label: 'Head of Department' },
   { value: 'Principal', label: 'Principal' },
+];
+
+export const POSTS: { value: Post; label: string }[] = [
+  { value: 'Faculty', label: 'Faculty' },
+  { value: 'Head of Department', label: 'Head of Department' },
+  { value: 'Principal', label: 'Principal' },
+];
+
+/** Academic designations only – used with Post in signup (1 post + 1 designation). */
+export const DESIGNATIONS_ACADEMIC: { value: Designation; label: string }[] = [
+  { value: 'Assistant Professor', label: 'Assistant Professor' },
+  { value: 'Associate Professor', label: 'Associate Professor' },
+  { value: 'Professor', label: 'Professor' },
 ];
 
 export const ROLE_LABELS: Record<UserRole, string> = {

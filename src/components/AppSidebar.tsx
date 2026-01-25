@@ -28,6 +28,7 @@ import {
   ChevronDown,
   User,
   LogOut,
+  CheckCircle2,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -52,6 +53,7 @@ const mainNavItems: NavItem[] = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal'] },
   { title: 'CPS Entry', url: '/cps/new', icon: FileText, roles: ['faculty', 'hod'] },
   { title: 'My CPS Records', url: '/cps/records', icon: ClipboardCheck, roles: ['faculty', 'hod'] },
+  { title: 'Approvals', url: '/approvals/hod', icon: CheckCircle2, roles: ['hod'] },
 ];
 
 const approvalNavItems: NavItem[] = [
@@ -78,8 +80,8 @@ export function AppSidebar() {
   const collapsed = state === 'collapsed';
 
   const filterByRole = (items: NavItem[]) => {
-    if (!currentRole) return [];
-    return items.filter((item) => item.roles.includes(currentRole));
+    if (!user?.roles?.length) return [];
+    return items.filter((item) => item.roles.some((r) => user!.roles!.includes(r)));
   };
 
   const isActive = (path: string) => location.pathname === path;

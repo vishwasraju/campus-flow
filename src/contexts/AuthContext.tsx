@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, UserRole, AuthState, Department, Designation } from '@/types/auth';
+import { User, UserRole, AuthState, Department, Designation, Post } from '@/types/auth';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<boolean>;
@@ -13,6 +13,7 @@ interface RegisterData {
   password: string;
   usn: string;
   department: Department;
+  post: Post;
   designation: Designation;
 }
 
@@ -68,13 +69,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     currentRole: null,
   });
 
+  /** Prefer principal > hod > faculty so HOD/Principal users see the correct dashboard. */
+  const getPrimaryRole = (roles: UserRole[]): UserRole => {
+    if (roles.includes('principal')) return 'principal';
+    if (roles.includes('hod')) return 'hod';
+    if (roles.includes('faculty')) return 'faculty';
+    return roles[0];
+  };
+
   // Load auth state from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setAuthState(parsed);
+        const roles = parsed.user?.roles ?? [];
+        setAuthState({
+          ...parsed,
+          currentRole: roles.length ? getPrimaryRole(roles) : null,
+        });
       } catch (e) {
         console.error('Failed to parse auth state:', e);
       }
@@ -112,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAuthState({
         user: userWithoutPassword,
         isAuthenticated: true,
-        currentRole: user.roles[0],
+        currentRole: getPrimaryRole(user.roles),
       });
       return true;
     }
@@ -140,11 +153,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { success: false, error: 'USN already registered' };
     }
 
-    // Determine roles based on designation
+    // Determine roles based on post
     let roles: UserRole[] = ['faculty'];
-    if (userData.designation === 'Head of Department') {
+    if (userData.post === 'Head of Department') {
       roles = ['faculty', 'hod'];
-    } else if (userData.designation === 'Principal') {
+    } else if (userData.post === 'Principal') {
       roles = ['principal'];
     }
 
@@ -169,7 +182,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthState({
       user: userWithoutPassword,
       isAuthenticated: true,
-      currentRole: roles[0],
+      currentRole: getPrimaryRole(roles),
     });
 
     return { success: true };

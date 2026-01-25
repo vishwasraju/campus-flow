@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { GraduationCap, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { DEPARTMENTS, DESIGNATIONS, Department, Designation } from '@/types/auth';
+import { DEPARTMENTS, DESIGNATIONS_ACADEMIC, POSTS, Department, Designation, Post } from '@/types/auth';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +21,7 @@ const Signup = () => {
     email: '',
     usn: '',
     department: '' as Department | '',
+    post: '' as Post | '',
     designation: '' as Designation | '',
     password: '',
     confirmPassword: '',
@@ -40,7 +41,7 @@ const Signup = () => {
     setError('');
 
     // Validation
-    if (!formData.name || !formData.email || !formData.usn || !formData.department || !formData.designation || !formData.password) {
+    if (!formData.name || !formData.email || !formData.usn || !formData.department || !formData.post || !formData.designation || !formData.password) {
       setError('All fields are required');
       return;
     }
@@ -63,6 +64,7 @@ const Signup = () => {
         email: formData.email,
         usn: formData.usn,
         department: formData.department as Department,
+        post: formData.post as Post,
         designation: formData.designation as Designation,
         password: formData.password,
       });
@@ -166,6 +168,25 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="post">Post</Label>
+                <Select
+                  value={formData.post}
+                  onValueChange={(value) => handleChange('post', value)}
+                >
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Select post" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {POSTS.map((p) => (
+                      <SelectItem key={p.value} value={p.value}>
+                        {p.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="designation">Designation</Label>
                 <Select
                   value={formData.designation}
@@ -175,7 +196,7 @@ const Signup = () => {
                     <SelectValue placeholder="Select designation" />
                   </SelectTrigger>
                   <SelectContent>
-                    {DESIGNATIONS.map((desig) => (
+                    {DESIGNATIONS_ACADEMIC.map((desig) => (
                       <SelectItem key={desig.value} value={desig.value}>
                         {desig.label}
                       </SelectItem>
