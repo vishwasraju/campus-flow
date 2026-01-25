@@ -32,7 +32,7 @@ const categoryIcons: Record<CPSCategory, React.ComponentType<{ className?: strin
 
 const CPSEntry = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, currentRole } = useAuth();
   const { addEntry } = useCPS();
   
   const [activeCategory, setActiveCategory] = useState<CPSCategory>('research');
@@ -264,6 +264,11 @@ const CPSEntry = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Approval Workflow</CardTitle>
+              <CardDescription>
+                {currentRole === 'hod'
+                  ? 'Your entry goes to Principal for final approval.'
+                  : 'Your entry goes to HOD for approval.'}
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -276,24 +281,27 @@ const CPSEntry = () => {
                     <div className="text-xs text-muted-foreground">You are here</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 opacity-50">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
-                    2
+                {currentRole === 'hod' ? (
+                  <div className="flex items-center gap-3 opacity-50">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                      2
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium">Principal Approval</div>
+                      <div className="text-xs text-muted-foreground">Pending</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-medium">HOD Review</div>
-                    <div className="text-xs text-muted-foreground">Pending</div>
+                ) : (
+                  <div className="flex items-center gap-3 opacity-50">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+                      2
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium">HOD Approve</div>
+                      <div className="text-xs text-muted-foreground">Pending</div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 opacity-50">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
-                    3
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium">Principal Approval</div>
-                    <div className="text-xs text-muted-foreground">Pending</div>
-                  </div>
-                </div>
+                )}
               </div>
             </CardContent>
           </Card>
