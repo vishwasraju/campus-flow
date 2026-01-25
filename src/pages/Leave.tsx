@@ -38,7 +38,7 @@ import {
   LeaveEntry,
 } from '@/types/leave';
 import { format, differenceInDays, parseISO } from 'date-fns';
-import { Calendar, Clock, CheckCircle2, XCircle, Send, User } from 'lucide-react';
+import { Calendar, Clock, CheckCircle2, XCircle, Send, User, TrendingUp, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 
 const statusStyles: Record<LeaveStatus, string> = {
@@ -124,14 +124,14 @@ const Leave = () => {
 
     if (actionType === 'approve') {
       if (selectedLeave.status === 'pending_hod') {
+        // HOD approves faculty leave → forward to Principal for final approval
         updateLeave(selectedLeave.id, {
-          status: 'approved',
-          approvedAt: new Date().toISOString(),
-          approvedBy: 'hod',
+          status: 'pending_principal',
           remarks: remarks || undefined,
         });
-        toast.success('Leave approved');
+        toast.success('Leave approved by HOD. Forwarded to Principal for final approval.');
       } else {
+        // Principal approves HOD leave or final approval for faculty leave
         updateLeave(selectedLeave.id, {
           status: 'approved',
           approvedAt: new Date().toISOString(),
@@ -168,13 +168,84 @@ const Leave = () => {
   const days = (s: string, e: string) =>
     differenceInDays(parseISO(e), parseISO(s)) + 1;
 
+  // Calculate dashboard stats
+  const myPending = myLeaves.filter(
+    (l) => l.status === 'pending_hod' || l.status === 'pending_principal'
+  ).length;
+  const myApproved = myLeaves.filter((l) => l.status === 'approved').length;
+  const myRejected = myLeaves.filter((l) => l.status === 'rejected').length;
+  const totalDays = myLeaves
+    .filter((l) => l.status === 'approved')
+    .reduce((sum, l) => sum + days(l.startDate, l.endDate), 0);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Leave Management</h1>
         <p className="text-muted-foreground">
-          Apply for leave and manage approvals. Faculty leaves are approved by HOD; HOD leaves by Principal.
+          Apply for leave and manage approvals. Faculty leaves require HOD and Principal approval; HOD leaves require Principal approval.
         </p>
+      </div>
+
+      {/* Dashboard Stats */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Approvals</CardTitle>
+            <Clock className="h-4 w-4 text-amber-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{myPending}</div>
+            <p className="text-xs text-muted-foreground">Awaiting review</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Approved Leaves</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{myApproved}</div>
+            <p className="text-xs text-muted-foreground">Total approved</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Leave Days</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalDays}</div>
+            <p className="text-xs text-muted-foreground">Approved days</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              {isHOD ? 'Faculty Pending' : isPrincipal ? 'HOD Pending' : 'Rejected'}
+            </CardTitle>
+            {isHOD || isPrincipal ? (
+              <FileText className="h-4 w-4 text-blue-500" />
+            ) : (
+              <XCircle className="h-4 w-4 text-red-500" />
+            )}
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {isHOD ? pendingHOD.length : isPrincipal ? pendingPrincipal.length : myRejected}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {isHOD
+                ? 'Awaiting your approval'
+                : isPrincipal
+                  ? 'Awaiting your approval'
+                  : 'Total rejected'}
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Apply for Leave - Faculty & HOD */}

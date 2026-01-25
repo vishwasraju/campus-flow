@@ -25,7 +25,7 @@ export interface LeaveEntry {
   reason: string;
   status: LeaveStatus;
   appliedAt: string;
-  /** Set when HOD approves (faculty) or Principal approves (HOD leave). */
+  /** Set when Principal gives final approval (for both faculty and HOD leaves). */
   approvedAt?: string;
   approvedBy?: 'hod' | 'principal';
   rejectedAt?: string;
