@@ -143,3 +143,47 @@
     @apply bg-red-100 text-red-800 border-red-200;
   }
 }
+
+/* Print styles for Timetable */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+
+  body {
+    background: white;
+  }
+
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  .print\\:p-8 {
+    padding: 2rem !important;
+  }
+
+  .print\\:mb-4 {
+    margin-bottom: 1rem !important;
+  }
+
+  .print\\:mt-6 {
+    margin-top: 1.5rem !important;
+  }
+
+  .print\\:cursor-default {
+    cursor: default !important;
+  }
+
+  /* Ensure timetable grid prints correctly */
+  [class*="grid"] {
+    page-break-inside: avoid;
+  }
+
+  /* Hide sidebar and navigation when printing */
+  aside,
+  nav,
+  header:not(.timetable-header) {
+    display: none !important;
+  }
+}
