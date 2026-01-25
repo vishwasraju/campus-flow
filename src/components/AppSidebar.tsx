@@ -57,7 +57,6 @@ const mainNavItems: NavItem[] = [
 ];
 
 const approvalNavItems: NavItem[] = [
-  { title: 'HOD Approvals', url: '/approvals/hod', icon: ClipboardCheck, roles: ['hod'] },
   { title: 'Principal Approvals', url: '/approvals/principal', icon: ClipboardCheck, roles: ['principal'] },
 ];
 
@@ -80,8 +79,8 @@ export function AppSidebar() {
   const collapsed = state === 'collapsed';
 
   const filterByRole = (items: NavItem[]) => {
-    if (!user?.roles?.length) return [];
-    return items.filter((item) => item.roles.some((r) => user!.roles!.includes(r)));
+    if (!currentRole) return [];
+    return items.filter((item) => item.roles.includes(currentRole));
   };
 
   const isActive = (path: string) => location.pathname === path;
