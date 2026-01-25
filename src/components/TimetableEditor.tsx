@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTimetable } from '@/contexts/TimetableContext';
+import { DEPARTMENTS } from '@/types/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -65,11 +66,33 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
     timetableStatus === 'pending_faculty' &&
     !hasUserApproved;
 
+  // Helper function to check if departments match (handles both code and full name)
+  const departmentsMatch = (userDept: string, timetableDept: string): boolean => {
+    // Direct match
+    if (userDept === timetableDept) return true;
+    
+    // Find department info for user's department (could be code or label)
+    const userDeptInfo = DEPARTMENTS.find(d => d.value === userDept || d.label === userDept);
+    // Find department info for timetable's department (could be code or label)
+    const timetableDeptInfo = DEPARTMENTS.find(d => d.value === timetableDept || d.label === timetableDept);
+    
+    // If both are found and they refer to the same department (same value), they match
+    if (userDeptInfo && timetableDeptInfo && userDeptInfo.value === timetableDeptInfo.value) {
+      return true;
+    }
+    
+    // Fallback: check if user's code matches timetable's label or vice versa
+    if (userDeptInfo && userDeptInfo.label === timetableDept) return true;
+    if (timetableDeptInfo && timetableDeptInfo.label === userDept) return true;
+    
+    return false;
+  };
+
   const canApproveAsHOD =
     user &&
     currentRole === 'hod' &&
     timetableStatus === 'pending_hod' &&
-    timetable.header.department === user.department;
+    departmentsMatch(user.department, timetable.header.department);
 
   const isEditable = timetableStatus === 'draft';
   const showCreateButton = timetableStatus === 'draft' && user;
@@ -86,34 +109,78 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
       setShowCellDialog(true);
     } else {
       setSelectedCell({ day, timeSlotId });
-      setEditingCell(null);
+      // Initialize editingCell with empty values for new cell
+      setEditingCell({
+        id: '',
+        day,
+        timeSlotId,
+        subjectCode: '',
+        subjectName: '',
+        facultyName: '',
+        batch: '',
+        lab: '',
+        room: '',
+      });
       setShowCellDialog(true);
     }
   };
 
   const handleSaveCell = () => {
-    if (editingCell) {
-      updateCell(editingCell.id, editingCell);
+    if (!editingCell) return;
+
+    // Check if this is an update or a new cell
+    const existingCell = getCell(editingCell.day, editingCell.timeSlotId);
+    
+    if (existingCell && existingCell.id && editingCell.id && editingCell.id === existingCell.id) {
+      // Update existing cell - use the editingCell's ID
+      updateCell(editingCell.id, {
+        subjectCode: editingCell.subjectCode || '',
+        subjectName: editingCell.subjectName || '',
+        facultyName: editingCell.facultyName || '',
+        batch: editingCell.batch || '',
+        lab: editingCell.lab || '',
+        room: editingCell.room || '',
+      });
       toast.success('Cell updated');
-      setEditingCell(null);
-      setShowCellDialog(false);
-    } else if (selectedCell) {
-      const newCell: Omit<TimetableCell, 'id'> = {
-        day: selectedCell.day,
-        timeSlotId: selectedCell.timeSlotId,
-        subjectCode: editingCell?.subjectCode || '',
-        subjectName: editingCell?.subjectName || '',
-        facultyName: editingCell?.facultyName || '',
-        batch: editingCell?.batch || '',
-        lab: editingCell?.lab || '',
-        room: editingCell?.room || '',
-      };
-      addCell(newCell);
-      toast.success('Cell added');
-      setSelectedCell(null);
-      setEditingCell(null);
-      setShowCellDialog(false);
+    } else {
+      // Add new cell - check if editingCell has the required fields
+      if (!editingCell.day || !editingCell.timeSlotId) {
+        toast.error('Invalid cell data');
+        return;
+      }
+      
+      // Check if there's already a cell at this position (shouldn't happen, but just in case)
+      if (existingCell) {
+        // Update the existing cell instead
+        updateCell(existingCell.id, {
+          subjectCode: editingCell.subjectCode || '',
+          subjectName: editingCell.subjectName || '',
+          facultyName: editingCell.facultyName || '',
+          batch: editingCell.batch || '',
+          lab: editingCell.lab || '',
+          room: editingCell.room || '',
+        });
+        toast.success('Cell updated');
+      } else {
+        // Add new cell
+        const newCell: Omit<TimetableCell, 'id'> = {
+          day: editingCell.day,
+          timeSlotId: editingCell.timeSlotId,
+          subjectCode: editingCell.subjectCode || '',
+          subjectName: editingCell.subjectName || '',
+          facultyName: editingCell.facultyName || '',
+          batch: editingCell.batch || '',
+          lab: editingCell.lab || '',
+          room: editingCell.room || '',
+        };
+        addCell(newCell);
+        toast.success('Cell added');
+      }
     }
+    
+    setEditingCell(null);
+    setSelectedCell(null);
+    setShowCellDialog(false);
   };
 
   const handleDeleteCell = () => {
@@ -464,13 +531,6 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
                 onChange={(e) => {
                   if (editingCell) {
                     setEditingCell({ ...editingCell, subjectCode: e.target.value });
-                  } else {
-                    setEditingCell({
-                      id: '',
-                      day: selectedCell?.day || 'Monday',
-                      timeSlotId: selectedCell?.timeSlotId || '',
-                      subjectCode: e.target.value,
-                    });
                   }
                 }}
                 placeholder="e.g., CS301"
@@ -484,13 +544,6 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
                 onChange={(e) => {
                   if (editingCell) {
                     setEditingCell({ ...editingCell, subjectName: e.target.value });
-                  } else {
-                    setEditingCell({
-                      id: '',
-                      day: selectedCell?.day || 'Monday',
-                      timeSlotId: selectedCell?.timeSlotId || '',
-                      subjectName: e.target.value,
-                    });
                   }
                 }}
                 placeholder="e.g., Database Management Systems"
@@ -504,13 +557,6 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
                 onChange={(e) => {
                   if (editingCell) {
                     setEditingCell({ ...editingCell, facultyName: e.target.value });
-                  } else {
-                    setEditingCell({
-                      id: '',
-                      day: selectedCell?.day || 'Monday',
-                      timeSlotId: selectedCell?.timeSlotId || '',
-                      facultyName: e.target.value,
-                    });
                   }
                 }}
                 placeholder="e.g., Dr. John Doe"
@@ -525,13 +571,6 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
                   onChange={(e) => {
                     if (editingCell) {
                       setEditingCell({ ...editingCell, batch: e.target.value });
-                    } else {
-                      setEditingCell({
-                        id: '',
-                        day: selectedCell?.day || 'Monday',
-                        timeSlotId: selectedCell?.timeSlotId || '',
-                        batch: e.target.value,
-                      });
                     }
                   }}
                   placeholder="e.g., A1, B1"
@@ -545,14 +584,6 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
                   onChange={(e) => {
                     if (editingCell) {
                       setEditingCell({ ...editingCell, lab: e.target.value, room: e.target.value });
-                    } else {
-                      setEditingCell({
-                        id: '',
-                        day: selectedCell?.day || 'Monday',
-                        timeSlotId: selectedCell?.timeSlotId || '',
-                        lab: e.target.value,
-                        room: e.target.value,
-                      });
                     }
                   }}
                   placeholder="e.g., Lab-101"
