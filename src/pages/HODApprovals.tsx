@@ -47,7 +47,7 @@ const HODApprovals = () => {
   const recentlyProcessed = entries.filter(
     (e) => 
       e.department === user?.department && 
-      (e.status === 'pending_principal' || e.status === 'rejected') &&
+      (e.status === 'approved' || e.status === 'pending_principal' || e.status === 'rejected') &&
       e.hodApprovedAt
   ).slice(0, 5);
 
@@ -58,15 +58,29 @@ const HODApprovals = () => {
   };
 
   const confirmAction = () => {
-    if (!selectedEntry || !actionType) return;
+    if (!selectedEntry || !actionType || !user) return;
 
     if (actionType === 'approve') {
-      updateEntry(selectedEntry.id, {
-        status: 'pending_principal',
-        hodRemarks: remarks,
-        hodApprovedAt: new Date().toISOString(),
-      });
-      toast.success('Entry approved and forwarded to Principal');
+      // Check if entry is from faculty (not HOD) - faculty entries get final approval directly
+      const isFromHOD = selectedEntry.facultyId === user.id;
+      
+      if (isFromHOD) {
+        // HOD's own entry needs principal approval
+        updateEntry(selectedEntry.id, {
+          status: 'pending_principal',
+          hodRemarks: remarks,
+          hodApprovedAt: new Date().toISOString(),
+        });
+        toast.success('Entry approved and forwarded to Principal');
+      } else {
+        // Faculty entry gets final approval from HOD
+        updateEntry(selectedEntry.id, {
+          status: 'approved',
+          hodRemarks: remarks,
+          hodApprovedAt: new Date().toISOString(),
+        });
+        toast.success('Entry approved (Final)');
+      }
     } else {
       updateEntry(selectedEntry.id, {
         status: 'rejected',
@@ -215,7 +229,7 @@ const HODApprovals = () => {
             </DialogTitle>
             <DialogDescription>
               {actionType === 'approve'
-                ? 'This entry will be forwarded to the Principal for final approval.'
+                ? 'This entry will be approved.'
                 : 'This entry will be rejected and the faculty will be notified.'}
             </DialogDescription>
           </DialogHeader>
@@ -253,7 +267,7 @@ const HODApprovals = () => {
               variant={actionType === 'reject' ? 'destructive' : 'default'}
               onClick={confirmAction}
             >
-              {actionType === 'approve' ? 'Approve & Forward' : 'Reject Entry'}
+              {actionType === 'approve' ? 'Approve Entry' : 'Reject Entry'}
             </Button>
           </DialogFooter>
         </DialogContent>

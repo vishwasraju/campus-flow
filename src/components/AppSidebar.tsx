@@ -74,7 +74,7 @@ const reportNavItems: NavItem[] = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { user, currentRole, switchRole, logout } = useAuth();
+  const { user, currentRole, logout } = useAuth();
   const collapsed = state === 'collapsed';
 
   const filterByRole = (items: NavItem[]) => {
@@ -183,26 +183,6 @@ export function AppSidebar() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            
-            {/* Role Switcher */}
-            {user && user.roles.length > 1 && (
-              <>
-                <DropdownMenuLabel className="text-xs text-muted-foreground">Switch Role</DropdownMenuLabel>
-                {user.roles.map((role) => (
-                  <DropdownMenuItem
-                    key={role}
-                    onClick={() => switchRole(role)}
-                    className="flex items-center justify-between"
-                  >
-                    {ROLE_LABELS[role]}
-                    {currentRole === role && (
-                      <Badge variant="secondary" className="text-xs">Active</Badge>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
-            )}
 
             <DropdownMenuItem onClick={logout} className="text-destructive">
               <LogOut className="w-4 h-4 mr-2" />

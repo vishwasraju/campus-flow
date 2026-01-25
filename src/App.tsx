@@ -12,6 +12,7 @@ import CPSEntry from "./pages/CPSEntry";
 import CPSRecords from "./pages/CPSRecords";
 import HODApprovals from "./pages/HODApprovals";
 import PrincipalApprovals from "./pages/PrincipalApprovals";
+import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Routes>
               {/* Public Routes */}
               <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
               
               {/* Protected Routes - wrapped in DashboardLayout */}
               <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
