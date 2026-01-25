@@ -25,16 +25,26 @@ import {
   Clock,
   FileText,
   Building2,
+  Eye,
 } from 'lucide-react';
-import { CPSEntry, CPS_CATEGORY_LABELS } from '@/types/cps';
+import { CPSEntry, CPS_CATEGORY_LABELS, APPROVAL_STATUS_LABELS, ApprovalStatus } from '@/types/cps';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { toast } from 'sonner';
+
+const statusStyles: Record<ApprovalStatus, string> = {
+  draft: 'bg-secondary text-secondary-foreground',
+  pending_hod: 'bg-amber-100 text-amber-800 border-amber-200',
+  pending_principal: 'bg-blue-100 text-blue-800 border-blue-200',
+  approved: 'bg-green-100 text-green-800 border-green-200',
+  rejected: 'bg-red-100 text-red-800 border-red-200',
+};
 
 const PrincipalApprovals = () => {
   const { getPendingPrincipalApprovals, updateEntry, entries } = useCPS();
   
   const [selectedEntry, setSelectedEntry] = useState<CPSEntry | null>(null);
+  const [viewingEntry, setViewingEntry] = useState<CPSEntry | null>(null);
   const [remarks, setRemarks] = useState('');
   const [actionType, setActionType] = useState<'approve' | 'reject' | null>(null);
 
@@ -163,7 +173,11 @@ const PrincipalApprovals = () => {
               </TableHeader>
               <TableBody>
                 {pendingEntries.map((entry) => (
-                  <TableRow key={entry.id}>
+                  <TableRow
+                    key={entry.id}
+                    className="cursor-pointer"
+                    onClick={() => setViewingEntry(entry)}
+                  >
                     <TableCell>
                       <div className="font-medium">{entry.facultyName}</div>
                     </TableCell>
@@ -187,8 +201,16 @@ const PrincipalApprovals = () => {
                     <TableCell>
                       {entry.hodApprovedAt && format(new Date(entry.hodApprovedAt), 'MMM d, yyyy')}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setViewingEntry(entry)}
+                          aria-label="View details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
                         <Button
                           size="sm"
                           variant="outline"
@@ -216,8 +238,103 @@ const PrincipalApprovals = () => {
         </CardContent>
       </Card>
 
+      {/* View activity details dialog */}
+      <Dialog open={!!viewingEntry} onOpenChange={(open) => !open && setViewingEntry(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Activity Details</DialogTitle>
+            <DialogDescription>View full details of this CPS entry</DialogDescription>
+          </DialogHeader>
+          {viewingEntry && (
+            <div className="space-y-4">
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Faculty</span>
+                <p className="text-sm">{viewingEntry.facultyName}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Department</span>
+                <p className="text-sm">{viewingEntry.department}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Activity</span>
+                <p className="text-sm">{viewingEntry.activityType}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Category</span>
+                <p className="text-sm">{CPS_CATEGORY_LABELS[viewingEntry.category]}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Date</span>
+                <p className="text-sm">{format(new Date(viewingEntry.date), 'MMM d, yyyy')}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Credits</span>
+                <p className="text-sm font-semibold">{viewingEntry.credits}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Description</span>
+                <p className="text-sm">{viewingEntry.description}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Supporting document / file</span>
+                <p className="text-sm">
+                  {viewingEntry.evidence?.startsWith('file:')
+                    ? `File: ${viewingEntry.evidence.slice(5)}`
+                    : viewingEntry.evidence
+                      ? (
+                          <a
+                            href={viewingEntry.evidence}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary underline hover:no-underline"
+                          >
+                            {viewingEntry.evidence}
+                          </a>
+                        )
+                      : 'None'}
+                </p>
+              </div>
+              {viewingEntry.hodRemarks && (
+                <div className="grid gap-2">
+                  <span className="text-sm font-medium text-muted-foreground">HOD Remarks</span>
+                  <p className="text-sm p-2 rounded-md bg-muted">{viewingEntry.hodRemarks}</p>
+                </div>
+              )}
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">HOD Approved</span>
+                <p className="text-sm">
+                  {viewingEntry.hodApprovedAt
+                    ? format(new Date(viewingEntry.hodApprovedAt), 'MMM d, yyyy')
+                    : '—'}
+                </p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Status</span>
+                <Badge className={statusStyles[viewingEntry.status]}>
+                  {APPROVAL_STATUS_LABELS[viewingEntry.status]}
+                </Badge>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingEntry(null)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Confirmation Dialog */}
-      <Dialog open={!!selectedEntry} onOpenChange={() => setSelectedEntry(null)}>
+      <Dialog
+        open={!!selectedEntry}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedEntry(null);
+            setActionType(null);
+            setRemarks('');
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>

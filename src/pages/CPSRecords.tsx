@@ -1,8 +1,17 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -16,12 +25,13 @@ import {
   FileText, 
   Clock, 
   CheckCircle2, 
-  XCircle,
   Eye,
   Send,
+  XCircle,
 } from 'lucide-react';
 import { CPSEntry, APPROVAL_STATUS_LABELS, CPS_CATEGORY_LABELS, ApprovalStatus } from '@/types/cps';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 const statusStyles: Record<ApprovalStatus, string> = {
   draft: 'bg-secondary text-secondary-foreground',
@@ -33,7 +43,8 @@ const statusStyles: Record<ApprovalStatus, string> = {
 
 const CPSRecords = () => {
   const { user } = useAuth();
-  const { entries, updateEntry } = useCPS();
+  const { entries, updateEntry, deleteEntry } = useCPS();
+  const [selectedEntry, setSelectedEntry] = useState<CPSEntry | null>(null);
 
   const myEntries = user ? entries.filter((e) => e.facultyId === user.id) : [];
 
@@ -48,6 +59,19 @@ const CPSRecords = () => {
       submittedAt: new Date().toISOString(),
     });
   };
+
+  const handleCancelEntry = () => {
+    if (!selectedEntry) return;
+    deleteEntry(selectedEntry.id);
+    setSelectedEntry(null);
+    toast.success('Entry cancelled');
+  };
+
+  const canCancelEntry =
+    user &&
+    selectedEntry &&
+    selectedEntry.facultyId === user.id &&
+    (['draft', 'pending_hod', 'pending_principal'] as ApprovalStatus[]).includes(selectedEntry.status);
 
   const totalCredits = myEntries
     .filter((e) => e.status === 'approved')
@@ -190,7 +214,12 @@ const CPSRecords = () => {
                                     Submit
                                   </Button>
                                 )}
-                                <Button variant="ghost" size="sm">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setSelectedEntry(entry)}
+                                  aria-label="View details"
+                                >
                                   <Eye className="w-4 h-4" />
                                 </Button>
                               </div>
@@ -206,6 +235,76 @@ const CPSRecords = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* View details dialog */}
+      <Dialog open={!!selectedEntry} onOpenChange={(open) => !open && setSelectedEntry(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Activity Details</DialogTitle>
+            <DialogDescription>View and manage this CPS entry</DialogDescription>
+          </DialogHeader>
+          {selectedEntry && (
+            <div className="space-y-4">
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Activity</span>
+                <p className="text-sm">{selectedEntry.activityType}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Category</span>
+                <p className="text-sm">{CPS_CATEGORY_LABELS[selectedEntry.category]}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Date</span>
+                <p className="text-sm">{format(new Date(selectedEntry.date), 'MMM d, yyyy')}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Credits</span>
+                <p className="text-sm font-semibold">{selectedEntry.credits}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Description</span>
+                <p className="text-sm">{selectedEntry.description}</p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Supporting document / file</span>
+                <p className="text-sm">
+                  {selectedEntry.evidence?.startsWith('file:')
+                    ? `File: ${selectedEntry.evidence.slice(5)}`
+                    : selectedEntry.evidence
+                      ? (
+                          <a
+                            href={selectedEntry.evidence}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary underline hover:no-underline"
+                          >
+                            {selectedEntry.evidence}
+                          </a>
+                        )
+                      : 'None'}
+                </p>
+              </div>
+              <div className="grid gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Status</span>
+                <Badge className={statusStyles[selectedEntry.status]}>
+                  {APPROVAL_STATUS_LABELS[selectedEntry.status]}
+                </Badge>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedEntry(null)}>
+              Close
+            </Button>
+            {canCancelEntry && (
+              <Button variant="destructive" onClick={handleCancelEntry}>
+                <XCircle className="w-4 h-4 mr-2" />
+                Cancel entry
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

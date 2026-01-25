@@ -5,6 +5,7 @@ interface CPSContextType {
   entries: CPSEntry[];
   addEntry: (entry: Omit<CPSEntry, 'id'>) => void;
   updateEntry: (id: string, updates: Partial<CPSEntry>) => void;
+  deleteEntry: (id: string) => void;
   getEntriesByFaculty: (facultyId: string) => CPSEntry[];
   getEntriesByStatus: (status: ApprovalStatus) => CPSEntry[];
   getEntriesByDepartment: (department: string) => CPSEntry[];
@@ -103,6 +104,10 @@ export function CPSProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const deleteEntry = (id: string) => {
+    setEntries((prev) => prev.filter((entry) => entry.id !== id));
+  };
+
   const getEntriesByFaculty = (facultyId: string): CPSEntry[] => {
     return entries.filter((e) => e.facultyId === facultyId);
   };
@@ -131,6 +136,7 @@ export function CPSProvider({ children }: { children: ReactNode }) {
         entries,
         addEntry,
         updateEntry,
+        deleteEntry,
         getEntriesByFaculty,
         getEntriesByStatus,
         getEntriesByDepartment,

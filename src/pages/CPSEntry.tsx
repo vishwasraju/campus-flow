@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
@@ -18,7 +18,10 @@ import {
   Save, 
   Send,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Upload,
+  X,
+  Link2
 } from 'lucide-react';
 import { CPSCategory, CPS_ACTIVITIES, CPS_CATEGORY_LABELS, CPSActivityType } from '@/types/cps';
 import { toast } from 'sonner';
@@ -39,8 +42,11 @@ const CPSEntry = () => {
   const [selectedActivity, setSelectedActivity] = useState<string>('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
-  const [evidence, setEvidence] = useState('');
+  const [evidenceFile, setEvidenceFile] = useState<File | null>(null);
+  const [evidenceLink, setEvidenceLink] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const getActivitiesByCategory = (category: CPSCategory): CPSActivityType[] => {
     return CPS_ACTIVITIES.filter((a) => a.category === category);
@@ -64,6 +70,7 @@ const CPSEntry = () => {
     const activity = getSelectedActivityDetails();
     if (!activity || !user) return;
 
+    const evidence = evidenceFile ? `file:${evidenceFile.name}` : (evidenceLink.trim() || undefined);
     addEntry({
       facultyId: user.id,
       facultyName: user.name,
@@ -92,6 +99,7 @@ const CPSEntry = () => {
 
     setIsSubmitting(true);
 
+    const evidence = evidenceFile ? `file:${evidenceFile.name}` : (evidenceLink.trim() || undefined);
     addEntry({
       facultyId: user.id,
       facultyName: user.name,
@@ -194,15 +202,67 @@ const CPSEntry = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="evidence">Evidence/Reference (Optional)</Label>
-                        <Input
-                          id="evidence"
-                          placeholder="Link to certificate, DOI, or other proof"
-                          value={evidence}
-                          onChange={(e) => setEvidence(e.target.value)}
-                        />
+                        <Label>Evidence / Reference (Optional)</Label>
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+                          onClick={() => fileInputRef.current?.click()}
+                          onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragOver(true); }}
+                          onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragOver(false); }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsDragOver(false);
+                            const f = e.dataTransfer.files[0];
+                            if (f) setEvidenceFile(f);
+                          }}
+                          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+                            isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/50'
+                          }`}
+                        >
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,image/*"
+                            onChange={(e) => {
+                              const f = e.target.files?.[0];
+                              if (f) setEvidenceFile(f);
+                              e.target.value = '';
+                            }}
+                          />
+                          {evidenceFile ? (
+                            <div className="flex items-center justify-center gap-2">
+                              <span className="text-sm font-medium truncate max-w-[200px]">{evidenceFile.name}</span>
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); setEvidenceFile(null); }}
+                                className="p-1 rounded-full hover:bg-destructive/10 text-destructive"
+                                aria-label="Remove file"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <Upload className="w-10 h-10 mx-auto mb-2 text-muted-foreground" />
+                              <p className="text-sm font-medium">Drag and drop a document here, or click to browse</p>
+                              <p className="text-xs text-muted-foreground mt-1">PDF, DOC, images</p>
+                            </>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 pt-1">
+                          <Link2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                          <Input
+                            placeholder="Or add a link (certificate, DOI, etc.)"
+                            value={evidenceLink}
+                            onChange={(e) => setEvidenceLink(e.target.value)}
+                            className="h-9"
+                          />
+                        </div>
                         <p className="text-xs text-muted-foreground">
-                          Provide a link to supporting documents if available
+                          Upload a file or provide a link to supporting documents if available
                         </p>
                       </div>
                     </div>
