@@ -8,6 +8,13 @@ export type Department =
   | 'EEE' 
   | 'MECH';
 
+export type Designation = 
+  | 'Assistant Professor'
+  | 'Associate Professor'
+  | 'Professor'
+  | 'Head of Department'
+  | 'Principal';
+
 export interface User {
   id: string;
   collegeId: string;
@@ -15,6 +22,8 @@ export interface User {
   email: string;
   department: Department;
   roles: UserRole[];
+  designation: Designation;
+  usn: string;
   createdAt: string;
 }
 
@@ -31,6 +40,14 @@ export const DEPARTMENTS: { value: Department; label: string }[] = [
   { value: 'ECE', label: 'Electronics & Communication Engineering' },
   { value: 'EEE', label: 'Electrical & Electronics Engineering' },
   { value: 'MECH', label: 'Mechanical Engineering' },
+];
+
+export const DESIGNATIONS: { value: Designation; label: string }[] = [
+  { value: 'Assistant Professor', label: 'Assistant Professor' },
+  { value: 'Associate Professor', label: 'Associate Professor' },
+  { value: 'Professor', label: 'Professor' },
+  { value: 'Head of Department', label: 'Head of Department' },
+  { value: 'Principal', label: 'Principal' },
 ];
 
 export const ROLE_LABELS: Record<UserRole, string> = {

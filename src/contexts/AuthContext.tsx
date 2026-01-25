@@ -1,20 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, UserRole, AuthState, Department } from '@/types/auth';
+import { User, UserRole, AuthState, Department, Designation } from '@/types/auth';
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  switchRole: (role: UserRole) => void;
-  register: (userData: RegisterData) => Promise<boolean>;
+  register: (userData: RegisterData) => Promise<{ success: boolean; error?: string }>;
 }
 
 interface RegisterData {
   name: string;
   email: string;
   password: string;
-  collegeId: string;
+  usn: string;
   department: Department;
-  roles: UserRole[];
+  designation: Designation;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +28,8 @@ const DEMO_USERS: (User & { password: string })[] = [
     password: 'password123',
     department: 'CSE',
     roles: ['faculty'],
+    designation: 'Associate Professor',
+    usn: 'FAC2020001',
     createdAt: new Date().toISOString(),
   },
   {
@@ -39,6 +40,8 @@ const DEMO_USERS: (User & { password: string })[] = [
     password: 'password123',
     department: 'CSE',
     roles: ['faculty', 'hod'],
+    designation: 'Head of Department',
+    usn: 'HOD2018001',
     createdAt: new Date().toISOString(),
   },
   {
@@ -49,6 +52,8 @@ const DEMO_USERS: (User & { password: string })[] = [
     password: 'password123',
     department: 'CSE',
     roles: ['principal'],
+    designation: 'Principal',
+    usn: 'PRIN2015001',
     createdAt: new Date().toISOString(),
   },
 ];
@@ -122,29 +127,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const switchRole = (role: UserRole) => {
-    if (authState.user?.roles.includes(role)) {
-      setAuthState((prev) => ({
-        ...prev,
-        currentRole: role,
-      }));
-    }
-  };
-
-  const register = async (userData: RegisterData): Promise<boolean> => {
+  const register = async (userData: RegisterData): Promise<{ success: boolean; error?: string }> => {
     const users = getUsers();
     
-    // Check if email or college ID already exists
+    // Check if email already exists
     if (users.some((u) => u.email.toLowerCase() === userData.email.toLowerCase())) {
-      return false;
+      return { success: false, error: 'Email already registered' };
     }
-    if (users.some((u) => u.collegeId === userData.collegeId)) {
-      return false;
+    
+    // Check if USN already exists
+    if (users.some((u) => u.usn === userData.usn)) {
+      return { success: false, error: 'USN already registered' };
+    }
+
+    // Determine roles based on designation
+    let roles: UserRole[] = ['faculty'];
+    if (userData.designation === 'Head of Department') {
+      roles = ['faculty', 'hod'];
+    } else if (userData.designation === 'Principal') {
+      roles = ['principal'];
     }
 
     const newUser: User & { password: string } = {
       id: Date.now().toString(),
-      ...userData,
+      collegeId: `USR${Date.now()}`,
+      name: userData.name,
+      email: userData.email,
+      password: userData.password,
+      department: userData.department,
+      designation: userData.designation,
+      usn: userData.usn,
+      roles,
       createdAt: new Date().toISOString(),
     };
 
@@ -156,10 +169,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthState({
       user: userWithoutPassword,
       isAuthenticated: true,
-      currentRole: userData.roles[0],
+      currentRole: roles[0],
     });
 
-    return true;
+    return { success: true };
   };
 
   return (
@@ -168,7 +181,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...authState,
         login,
         logout,
-        switchRole,
         register,
       }}
     >
