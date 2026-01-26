@@ -25,10 +25,10 @@ import {
   CheckSquare,
   BarChart3,
   GraduationCap,
-  ChevronDown,
   User,
   LogOut,
   CheckCircle2,
+  Settings,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -39,37 +39,37 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ROLE_LABELS, UserRole } from '@/types/auth';
+import { UserRole } from '@/types/auth';
 
 interface NavItem {
   title: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
   roles: UserRole[];
+  iconColor?: string;
 }
 
 const mainNavItems: NavItem[] = [
-  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal'] },
-  { title: 'CPS Entry', url: '/cps/new', icon: FileText, roles: ['faculty', 'hod'] },
-  { title: 'My CPS Records', url: '/cps/records', icon: ClipboardCheck, roles: ['faculty', 'hod'] },
-  { title: 'Approvals', url: '/approvals/hod', icon: CheckCircle2, roles: ['hod'] },
+  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-blue-600 bg-blue-100' },
+  { title: 'CPS Entry', url: '/cps/new', icon: FileText, roles: ['faculty', 'hod'], iconColor: 'text-green-600 bg-green-100' },
+  { title: 'My CPS Records', url: '/cps/records', icon: ClipboardCheck, roles: ['faculty', 'hod'], iconColor: 'text-purple-600 bg-purple-100' },
+  { title: 'Approvals', url: '/approvals/hod', icon: CheckCircle2, roles: ['hod'], iconColor: 'text-amber-600 bg-amber-100' },
 ];
 
 const approvalNavItems: NavItem[] = [
-  { title: 'Principal Approvals', url: '/approvals/principal', icon: ClipboardCheck, roles: ['principal'] },
+  { title: 'Principal Approvals', url: '/approvals/principal', icon: ClipboardCheck, roles: ['principal'], iconColor: 'text-cyan-600 bg-cyan-100' },
 ];
 
 const moduleNavItems: NavItem[] = [
-  { title: 'Circulars', url: '/circulars', icon: Megaphone, roles: ['faculty', 'hod', 'principal'] },
-  { title: 'Events', url: '/events', icon: Calendar, roles: ['faculty', 'hod', 'principal'] },
-  { title: 'Leave Management', url: '/leave', icon: Clock, roles: ['faculty', 'hod', 'principal'] },
-  { title: 'Timetable', url: '/timetable', icon: CalendarDays, roles: ['faculty', 'hod', 'principal'] },
-  { title: 'Tasks', url: '/tasks', icon: CheckSquare, roles: ['faculty', 'hod', 'principal'] },
+  { title: 'Circulars', url: '/circulars', icon: Megaphone, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-orange-600 bg-orange-100' },
+  { title: 'Events', url: '/events', icon: Calendar, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-pink-600 bg-pink-100' },
+  { title: 'Leave Management', url: '/leave', icon: Clock, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-teal-600 bg-teal-100' },
+  { title: 'Timetable', url: '/timetable', icon: CalendarDays, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-indigo-600 bg-indigo-100' },
+  { title: 'Tasks', url: '/tasks', icon: CheckSquare, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-rose-600 bg-rose-100' },
 ];
 
 const reportNavItems: NavItem[] = [
-  { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['faculty', 'hod', 'principal'] },
+  { title: 'Reports', url: '/reports', icon: BarChart3, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-emerald-600 bg-emerald-100' },
 ];
 
 export function AppSidebar() {
@@ -94,11 +94,13 @@ export function AppSidebar() {
         <SidebarMenuButton asChild isActive={isActive(item.url)}>
           <NavLink 
             to={item.url} 
-            className="flex items-center gap-3"
-            activeClassName="bg-sidebar-accent text-sidebar-accent-foreground"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors hover:bg-sidebar-accent"
+            activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
           >
-            <item.icon className="h-4 w-4" />
-            {!collapsed && <span>{item.title}</span>}
+            <div className={`p-2 rounded-lg ${item.iconColor || 'text-muted-foreground bg-muted'}`}>
+              <item.icon className="h-4 w-4" />
+            </div>
+            {!collapsed && <span className="text-sm">{item.title}</span>}
           </NavLink>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -106,53 +108,61 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-sidebar-border">
+    <Sidebar className="border-r border-sidebar-border bg-sidebar">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 bg-sidebar-primary rounded-lg">
-            <GraduationCap className="w-5 h-5 text-sidebar-primary-foreground" />
+          <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-xl">
+            <GraduationCap className="w-5 h-5 text-primary-foreground" />
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-semibold text-sidebar-foreground">CPS</span>
-              <span className="text-xs text-sidebar-foreground/70">College Platform</span>
+              <span className="font-bold text-foreground text-lg">CPS</span>
+              <span className="text-xs text-muted-foreground">College Platform</span>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-3 py-4">
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">Main</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+            Main
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{renderNavItems(mainNavItems)}</SidebarMenu>
+            <SidebarMenu className="space-y-1">{renderNavItems(mainNavItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         {/* Approvals - Only for HOD/Principal */}
         {filterByRole(approvalNavItems).length > 0 && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="text-sidebar-foreground/60">Approvals</SidebarGroupLabel>
+          <SidebarGroup className="mt-6">
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+              Approvals
+            </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>{renderNavItems(approvalNavItems)}</SidebarMenu>
+              <SidebarMenu className="space-y-1">{renderNavItems(approvalNavItems)}</SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         )}
 
         {/* Modules */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">Modules</SidebarGroupLabel>
+        <SidebarGroup className="mt-6">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+            Modules
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{renderNavItems(moduleNavItems)}</SidebarMenu>
+            <SidebarMenu className="space-y-1">{renderNavItems(moduleNavItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         {/* Reports */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">Analytics</SidebarGroupLabel>
+        <SidebarGroup className="mt-6">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+            Analytics
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{renderNavItems(reportNavItems)}</SidebarMenu>
+            <SidebarMenu className="space-y-1">{renderNavItems(reportNavItems)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -162,30 +172,33 @@ export function AppSidebar() {
           <DropdownMenuTrigger asChild>
             <Button 
               variant="ghost" 
-              className="w-full justify-start gap-3 h-auto py-3 px-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              className="w-full justify-start gap-3 h-auto py-3 px-3 hover:bg-sidebar-accent rounded-lg"
             >
-              <div className="flex items-center justify-center w-8 h-8 bg-sidebar-accent rounded-full">
-                <User className="w-4 h-4" />
+              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full text-primary-foreground">
+                <User className="w-5 h-5" />
               </div>
               {!collapsed && (
                 <div className="flex-1 text-left">
-                  <div className="text-sm font-medium truncate">{user?.name}</div>
-                  <div className="text-xs text-sidebar-foreground/60">{user?.collegeId}</div>
+                  <div className="text-sm font-medium text-foreground truncate">{user?.name}</div>
+                  <div className="text-xs text-muted-foreground">{user?.designation || user?.collegeId}</div>
                 </div>
               )}
-              {!collapsed && <ChevronDown className="w-4 h-4" />}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col">
-                <span>{user?.name}</span>
+                <span className="font-medium">{user?.name}</span>
                 <span className="text-xs text-muted-foreground font-normal">{user?.email}</span>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-
-            <DropdownMenuItem onClick={logout} className="text-destructive">
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="w-4 h-4 mr-2" />
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logout} className="text-destructive cursor-pointer">
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out
             </DropdownMenuItem>

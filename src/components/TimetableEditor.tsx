@@ -23,7 +23,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Day, TimetableCell, TimeSlot } from '@/types/timetable';
+import { Day, TimetableCell, TimeSlot, SubjectDetail } from '@/types/timetable';
 import { Download, Edit2, Save, Trash2, CheckCircle2, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -212,7 +212,7 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
     return DAYS.indexOf(day) + 2;
   };
 
-  const generateSubjectDetails = () => {
+  const generateSubjectDetails = (): SubjectDetail[] => {
     const subjectMap = new Map<string, { name: string; faculty: string }>();
     timetable.cells.forEach((cell) => {
       if (cell.subjectCode && cell.subjectName) {
@@ -229,6 +229,9 @@ export const TimetableEditor: React.FC<TimetableEditorProps> = ({ onClose, onSav
       subjectCode: code,
       subjectName: data.name,
       facultyName: data.faculty,
+      labIncharge: undefined,
+      mentor: undefined,
+      classTeacher: undefined,
     }));
   };
 
