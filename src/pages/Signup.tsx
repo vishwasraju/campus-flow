@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { GraduationCap, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { GraduationCap, Eye, EyeOff, AlertCircle, User, Mail, Hash, Building2, Briefcase, KeyRound } from 'lucide-react';
 import { DEPARTMENTS, DESIGNATIONS_ACADEMIC, POSTS, Department, Designation, Post } from '@/types/auth';
 
 const Signup = () => {
@@ -82,18 +82,18 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/10 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 py-8">
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4 shadow-lg">
             <GraduationCap className="w-8 h-8 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">College Platform System</h1>
           <p className="text-muted-foreground mt-1">Create your account</p>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
+        <Card className="border shadow-xl">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl">Sign Up</CardTitle>
             <CardDescription>
@@ -103,7 +103,7 @@ const Signup = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -111,79 +111,90 @@ const Signup = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Dr. John Doe"
-                  value={formData.name}
-                  onChange={(e) => handleChange('name', e.target.value)}
-                  required
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Dr. John Doe"
+                    value={formData.name}
+                    onChange={(e) => handleChange('name', e.target.value)}
+                    required
+                    className="h-11 pl-10"
+                  />
+                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email (Gmail)</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@college.edu"
-                  value={formData.email}
-                  onChange={(e) => handleChange('email', e.target.value)}
-                  required
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@college.edu"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    required
+                    className="h-11 pl-10"
+                  />
+                  <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="usn">USN (University Serial Number)</Label>
-                <Input
-                  id="usn"
-                  type="text"
-                  placeholder="FAC2024001"
-                  value={formData.usn}
-                  onChange={(e) => handleChange('usn', e.target.value)}
-                  required
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    id="usn"
+                    type="text"
+                    placeholder="FAC2024001"
+                    value={formData.usn}
+                    onChange={(e) => handleChange('usn', e.target.value)}
+                    required
+                    className="h-11 pl-10"
+                  />
+                  <Hash className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="department">Department</Label>
-                <Select
-                  value={formData.department}
-                  onValueChange={(value) => handleChange('department', value)}
-                >
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Select department" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DEPARTMENTS.map((dept) => (
-                      <SelectItem key={dept.value} value={dept.value}>
-                        {dept.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="department">Department</Label>
+                  <Select
+                    value={formData.department}
+                    onValueChange={(value) => handleChange('department', value)}
+                  >
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DEPARTMENTS.map((dept) => (
+                        <SelectItem key={dept.value} value={dept.value}>
+                          {dept.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="post">Post</Label>
-                <Select
-                  value={formData.post}
-                  onValueChange={(value) => handleChange('post', value)}
-                >
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Select post" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {POSTS.map((p) => (
-                      <SelectItem key={p.value} value={p.value}>
-                        {p.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="post">Post</Label>
+                  <Select
+                    value={formData.post}
+                    onValueChange={(value) => handleChange('post', value)}
+                  >
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {POSTS.map((p) => (
+                        <SelectItem key={p.value} value={p.value}>
+                          {p.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -215,8 +226,9 @@ const Signup = () => {
                     value={formData.password}
                     onChange={(e) => handleChange('password', e.target.value)}
                     required
-                    className="h-11 pr-10"
+                    className="h-11 pl-10 pr-10"
                   />
+                  <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
@@ -229,18 +241,21 @@ const Signup = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Re-enter your password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                  required
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="Re-enter your password"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                    required
+                    className="h-11 pl-10"
+                  />
+                  <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
-              <Button type="submit" className="w-full h-11" disabled={isLoading}>
+              <Button type="submit" className="w-full h-11 text-base font-medium" disabled={isLoading}>
                 {isLoading ? 'Creating account...' : 'Create Account'}
               </Button>
             </form>

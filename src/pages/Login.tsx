@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { GraduationCap, Eye, EyeOff, AlertCircle, User, KeyRound } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -48,18 +48,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/10 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md animate-fade-in">
         {/* Logo and Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4 shadow-lg">
             <GraduationCap className="w-8 h-8 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">College Platform System</h1>
           <p className="text-muted-foreground mt-1">Sign in to your account</p>
         </div>
 
-        <Card className="border-border/50 shadow-lg">
+        <Card className="border shadow-xl">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl">Welcome back</CardTitle>
             <CardDescription>
@@ -69,7 +69,7 @@ const Login = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -77,15 +77,18 @@ const Login = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@college.edu"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-11"
-                />
+                <div className="relative">
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@college.edu"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="h-11 pl-10"
+                  />
+                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -98,8 +101,9 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-11 pr-10"
+                    className="h-11 pl-10 pr-10"
                   />
+                  <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
@@ -110,23 +114,26 @@ const Login = () => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full h-11" disabled={isLoading}>
+              <Button type="submit" className="w-full h-11 text-base font-medium" disabled={isLoading}>
                 {isLoading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
 
             {/* Demo Accounts Section */}
-            <div className="mt-6 pt-6 border-t border-border">
+            <div className="mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground text-center mb-4">
                 Quick Demo Access
               </p>
-              <div className="space-y-2">
+              <div className="grid gap-2">
                 <Button
                   variant="outline"
-                  className="w-full justify-start h-auto py-3"
+                  className="w-full justify-start h-auto py-3 hover:bg-blue-50 hover:border-blue-200"
                   onClick={() => handleDemoLogin('rajesh.kumar@college.edu')}
                   disabled={isLoading}
                 >
+                  <div className="p-2 rounded-lg bg-blue-100 mr-3">
+                    <User className="w-4 h-4 text-blue-600" />
+                  </div>
                   <div className="text-left">
                     <div className="font-medium">Faculty Account</div>
                     <div className="text-xs text-muted-foreground">Dr. Rajesh Kumar (CSE)</div>
@@ -134,10 +141,13 @@ const Login = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full justify-start h-auto py-3"
+                  className="w-full justify-start h-auto py-3 hover:bg-green-50 hover:border-green-200"
                   onClick={() => handleDemoLogin('priya.sharma@college.edu')}
                   disabled={isLoading}
                 >
+                  <div className="p-2 rounded-lg bg-green-100 mr-3">
+                    <User className="w-4 h-4 text-green-600" />
+                  </div>
                   <div className="text-left">
                     <div className="font-medium">HOD Account</div>
                     <div className="text-xs text-muted-foreground">Dr. Priya Sharma (CSE)</div>
@@ -145,10 +155,13 @@ const Login = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full justify-start h-auto py-3"
+                  className="w-full justify-start h-auto py-3 hover:bg-purple-50 hover:border-purple-200"
                   onClick={() => handleDemoLogin('suresh.reddy@college.edu')}
                   disabled={isLoading}
                 >
+                  <div className="p-2 rounded-lg bg-purple-100 mr-3">
+                    <User className="w-4 h-4 text-purple-600" />
+                  </div>
                   <div className="text-left">
                     <div className="font-medium">Principal Account</div>
                     <div className="text-xs text-muted-foreground">Dr. Suresh Reddy</div>

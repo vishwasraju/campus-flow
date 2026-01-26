@@ -73,6 +73,13 @@ export default {
           industry: "hsl(var(--cps-industry))",
           placement: "hsl(var(--cps-placement))",
         },
+        // Accent colors for icons
+        "accent-blue": "hsl(var(--accent-blue))",
+        "accent-green": "hsl(var(--accent-green))",
+        "accent-yellow": "hsl(var(--accent-yellow))",
+        "accent-purple": "hsl(var(--accent-purple))",
+        "accent-orange": "hsl(var(--accent-orange))",
+        "accent-cyan": "hsl(var(--accent-cyan))",
       },
       borderRadius: {
         lg: "var(--radius)",
