@@ -16,6 +16,7 @@ import HODApprovals from "./pages/HODApprovals";
 import PrincipalApprovals from "./pages/PrincipalApprovals";
 import Leave from "./pages/Leave";
 import Timetable from "./pages/Timetable";
+import Events from "./pages/Events";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
@@ -45,7 +46,7 @@ const App = () => (
               
               {/* Placeholder routes for other modules */}
               <Route path="/circulars" element={<DashboardLayout><ComingSoon title="Circulars" /></DashboardLayout>} />
-              <Route path="/events" element={<DashboardLayout><ComingSoon title="Events Calendar" /></DashboardLayout>} />
+              <Route path="/events" element={<DashboardLayout><Events /></DashboardLayout>} />
               <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
               <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
               <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
