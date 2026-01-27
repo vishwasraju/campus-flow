@@ -4,7 +4,7 @@ import { useCPS } from '@/contexts/CPSContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CPSEntry, ApprovalStatus } from '@/types/cps';
 import { toast } from 'sonner';
-import { CheckCircle2, Clock, FileText, Award, Inbox } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Award } from 'lucide-react';
 import CPSSidebar from '@/components/cps/CPSSidebar';
 import CPSEntryList from '@/components/cps/CPSEntryList';
 import CPSEntryDetail from '@/components/cps/CPSEntryDetail';
@@ -131,44 +131,29 @@ const CPSRecords = () => {
         </Card>
       </div>
 
-      {/* Gmail-style Inbox Layout - Fixed 3-column grid */}
-      <div className="grid grid-cols-[220px_1fr_380px] gap-0 min-h-[600px] bg-card rounded-xl border shadow-sm overflow-hidden">
-        {/* Left Sidebar */}
-        <div className="border-r bg-muted/30">
-          <CPSSidebar 
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-            counts={counts}
-          />
-        </div>
+      {/* Gmail-style Inbox Layout */}
+      <div className="flex gap-4 min-h-[500px]">
+        <CPSSidebar 
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          counts={counts}
+        />
 
-        {/* Center List */}
-        <div className="border-r overflow-hidden">
-          <CPSEntryList
-            entries={filteredEntries}
-            selectedEntry={selectedEntry}
-            onSelectEntry={setSelectedEntry}
-            onSubmitDraft={handleSubmitDraft}
-          />
-        </div>
+        <CPSEntryList
+          entries={filteredEntries}
+          selectedEntry={selectedEntry}
+          onSelectEntry={setSelectedEntry}
+          onSubmitDraft={handleSubmitDraft}
+        />
 
-        {/* Right Detail Panel - Always visible */}
-        <div className="overflow-auto">
-          {selectedEntry ? (
-            <CPSEntryDetail
-              entry={selectedEntry}
-              onClose={() => setSelectedEntry(null)}
-              onCancel={handleCancelEntry}
-              canCancel={!!canCancelEntry}
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-8">
-              <Inbox className="h-16 w-16 mb-4 opacity-20" />
-              <p className="text-lg font-medium">Select an entry</p>
-              <p className="text-sm mt-1">Choose an entry from the list to view details</p>
-            </div>
-          )}
-        </div>
+        {selectedEntry && (
+          <CPSEntryDetail
+            entry={selectedEntry}
+            onClose={() => setSelectedEntry(null)}
+            onCancel={handleCancelEntry}
+            canCancel={!!canCancelEntry}
+          />
+        )}
       </div>
     </div>
   );

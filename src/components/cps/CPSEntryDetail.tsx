@@ -7,14 +7,12 @@ import {
   Archive, 
   Trash2, 
   Star, 
+  Reply, 
   MoreVertical,
   ExternalLink,
   Calendar,
   Award,
-  FileText,
-  CheckCircle2,
-  Clock,
-  XCircle
+  FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -42,83 +40,77 @@ const categoryColors: Record<string, string> = {
 
 const CPSEntryDetail = ({ entry, onClose, onCancel, canCancel }: CPSEntryDetailProps) => {
   return (
-    <div className="flex flex-col h-full bg-card">
-      {/* Header with actions */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/20">
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted" onClick={onClose}>
+    <div className="w-[420px] bg-card rounded-lg border flex flex-col h-full shadow-lg">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
             <Archive className="h-4 w-4" />
           </Button>
           {canCancel && (
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-8 w-8 rounded-full text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="h-8 w-8 text-destructive hover:text-destructive"
               onClick={onCancel}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
           )}
         </div>
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
             <Star className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-5">
+      <div className="flex-1 overflow-auto p-4">
         {/* Title & Status */}
         <div className="flex items-start justify-between gap-4 mb-4">
-          <h2 className="text-xl font-semibold leading-tight text-foreground">{entry.activityType}</h2>
-          <Badge className={cn("flex-shrink-0 shadow-sm", statusStyles[entry.status])}>
+          <h2 className="text-lg font-semibold leading-tight">{entry.activityType}</h2>
+          <Badge className={cn("flex-shrink-0", statusStyles[entry.status])}>
             {APPROVAL_STATUS_LABELS[entry.status]}
           </Badge>
         </div>
 
         {/* Category Badge */}
         <div className="flex items-center gap-2 mb-6">
-          <Badge variant="outline" className={cn("shadow-sm", categoryColors[entry.category])}>
+          <Badge variant="outline" className={categoryColors[entry.category]}>
             {CPS_CATEGORY_LABELS[entry.category]}
           </Badge>
         </div>
 
         {/* Details Grid */}
-        <div className="space-y-4 bg-muted/30 rounded-xl p-4">
+        <div className="space-y-4">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <Calendar className="h-4 w-4 text-primary" />
-            </div>
+            <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
             <div>
-              <p className="text-xs text-muted-foreground font-medium">Date</p>
-              <p className="text-sm font-medium text-foreground">{format(new Date(entry.date), 'MMMM d, yyyy')}</p>
+              <p className="text-xs text-muted-foreground">Date</p>
+              <p className="text-sm font-medium">{format(new Date(entry.date), 'MMMM d, yyyy')}</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-              <Award className="h-4 w-4 text-green-600" />
-            </div>
+            <Award className="h-4 w-4 text-muted-foreground mt-0.5" />
             <div>
-              <p className="text-xs text-muted-foreground font-medium">Credits Earned</p>
-              <p className="text-sm font-semibold text-green-600">{entry.credits} credits</p>
+              <p className="text-xs text-muted-foreground">Credits</p>
+              <p className="text-sm font-semibold text-primary">{entry.credits} credits</p>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <FileText className="h-4 w-4 text-blue-600" />
-            </div>
+            <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
             <div className="flex-1">
-              <p className="text-xs text-muted-foreground font-medium">Description</p>
-              <p className="text-sm mt-1 text-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground">Description</p>
+              <p className="text-sm mt-1 text-foreground/80 leading-relaxed">
                 {entry.description}
               </p>
             </div>
@@ -126,22 +118,19 @@ const CPSEntryDetail = ({ entry, onClose, onCancel, canCancel }: CPSEntryDetailP
 
           {entry.evidence && (
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                <ExternalLink className="h-4 w-4 text-purple-600" />
-              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground mt-0.5" />
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Supporting Evidence</p>
+                <p className="text-xs text-muted-foreground">Supporting Evidence</p>
                 {entry.evidence.startsWith('file:') ? (
-                  <p className="text-sm mt-1 text-foreground">File: {entry.evidence.slice(5)}</p>
+                  <p className="text-sm mt-1">File: {entry.evidence.slice(5)}</p>
                 ) : (
                   <a
                     href={entry.evidence}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary hover:underline mt-1 inline-flex items-center gap-1"
+                    className="text-sm text-primary hover:underline mt-1 inline-block"
                   >
-                    View Evidence
-                    <ExternalLink className="h-3 w-3" />
+                    {entry.evidence}
                   </a>
                 )}
               </div>
@@ -150,61 +139,52 @@ const CPSEntryDetail = ({ entry, onClose, onCancel, canCancel }: CPSEntryDetailP
         </div>
 
         {/* Timeline */}
-        {(entry.submittedAt || entry.hodApprovedAt || entry.principalApprovedAt || entry.status === 'rejected') && (
+        {(entry.submittedAt || entry.hodApprovedAt || entry.principalApprovedAt) && (
           <div className="mt-6 pt-4 border-t">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Approval Timeline</p>
-            <div className="space-y-3 relative">
-              {/* Timeline line */}
-              <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-border" />
-              
+            <p className="text-xs font-medium text-muted-foreground mb-3">APPROVAL TIMELINE</p>
+            <div className="space-y-3">
               {entry.submittedAt && (
-                <div className="flex items-center gap-3 relative">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center z-10 shadow-sm">
-                    <Clock className="h-3 w-3 text-blue-600" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">Submitted</span>
-                  <span className="text-xs text-muted-foreground ml-auto tabular-nums">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                  <span className="text-muted-foreground">Submitted</span>
+                  <span className="text-xs text-muted-foreground ml-auto">
                     {format(new Date(entry.submittedAt), 'MMM d, h:mm a')}
                   </span>
                 </div>
               )}
               {entry.hodApprovedAt && (
-                <div className="flex items-center gap-3 relative">
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center z-10 shadow-sm">
-                    <CheckCircle2 className="h-3 w-3 text-green-600" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">HOD Approved</span>
-                  <span className="text-xs text-muted-foreground ml-auto tabular-nums">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                  <span className="text-muted-foreground">HOD Approved</span>
+                  <span className="text-xs text-muted-foreground ml-auto">
                     {format(new Date(entry.hodApprovedAt), 'MMM d, h:mm a')}
                   </span>
                 </div>
               )}
               {entry.principalApprovedAt && (
-                <div className="flex items-center gap-3 relative">
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center z-10 shadow-sm">
-                    <CheckCircle2 className="h-3 w-3 text-green-600" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">Principal Approved</span>
-                  <span className="text-xs text-muted-foreground ml-auto tabular-nums">
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-2 h-2 rounded-full bg-green-500" />
+                  <span className="text-muted-foreground">Principal Approved</span>
+                  <span className="text-xs text-muted-foreground ml-auto">
                     {format(new Date(entry.principalApprovedAt), 'MMM d, h:mm a')}
-                  </span>
-                </div>
-              )}
-              {entry.status === 'rejected' && entry.rejectedAt && (
-                <div className="flex items-center gap-3 relative">
-                  <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center z-10 shadow-sm">
-                    <XCircle className="h-3 w-3 text-red-600" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground">Rejected</span>
-                  <span className="text-xs text-muted-foreground ml-auto tabular-nums">
-                    {format(new Date(entry.rejectedAt), 'MMM d, h:mm a')}
                   </span>
                 </div>
               )}
             </div>
           </div>
         )}
+      </div>
 
+      {/* Quick Actions Footer */}
+      <div className="p-4 border-t">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" className="rounded-full text-xs">
+            Looking forward to it!
+          </Button>
+          <Button variant="outline" size="sm" className="rounded-full text-xs">
+            Thanks for the update!
+          </Button>
+        </div>
       </div>
     </div>
   );
