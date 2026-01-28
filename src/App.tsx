@@ -8,6 +8,7 @@ import { CPSProvider } from "@/contexts/CPSContext";
 import { LeaveProvider } from "@/contexts/LeaveContext";
 import { TimetableProvider } from "@/contexts/TimetableContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
+import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CPSEntry from "./pages/CPSEntry";
@@ -52,8 +53,8 @@ const App = () => (
               <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
               <Route path="/reports" element={<DashboardLayout><ComingSoon title="Reports" /></DashboardLayout>} />
               
-              {/* Redirects */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              {/* Landing page */}
+              <Route path="/" element={<LandingPage />} />
               
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
