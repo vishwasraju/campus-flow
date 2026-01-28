@@ -1,57 +1,71 @@
-import { FileText, Calendar, Clock, Users, CheckCircle, TrendingUp } from 'lucide-react';
+import { FileText, Calendar, Clock, Users, CheckCircle, TrendingUp, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 
 const features = [
   {
     icon: FileText,
     title: 'CPS Credit Tracking',
     description: 'Track research, academics, industry collaboration, and placement activities. Submit evidence and get approvals seamlessly.',
-    color: 'bg-blue-100 text-blue-600',
+    gradient: 'from-blue-500 to-cyan-500',
+    bgGradient: 'from-blue-500/10 to-cyan-500/10',
   },
   {
     icon: Calendar,
     title: 'Smart Timetable',
     description: 'Create, manage, and print department timetables. Assign faculty, subjects, and lab sessions with ease.',
-    color: 'bg-green-100 text-green-600',
+    gradient: 'from-emerald-500 to-teal-500',
+    bgGradient: 'from-emerald-500/10 to-teal-500/10',
   },
   {
     icon: Clock,
     title: 'Leave Management',
     description: 'Apply for casual, medical, or academic leave. Track approval status and maintain leave history.',
-    color: 'bg-purple-100 text-purple-600',
+    gradient: 'from-purple-500 to-pink-500',
+    bgGradient: 'from-purple-500/10 to-pink-500/10',
   },
   {
     icon: Users,
     title: 'Multi-Role Access',
     description: 'Faculty, HOD, and Principal roles with appropriate permissions and approval workflows.',
-    color: 'bg-orange-100 text-orange-600',
+    gradient: 'from-orange-500 to-amber-500',
+    bgGradient: 'from-orange-500/10 to-amber-500/10',
   },
   {
     icon: CheckCircle,
     title: 'Approval Workflow',
     description: 'Two-tier approval system with HOD and Principal levels. Track status at every stage.',
-    color: 'bg-cyan-100 text-cyan-600',
+    gradient: 'from-cyan-500 to-blue-500',
+    bgGradient: 'from-cyan-500/10 to-blue-500/10',
   },
   {
     icon: TrendingUp,
     title: 'Analytics & Reports',
     description: 'Comprehensive dashboards showing CPS credits, pending approvals, and performance metrics.',
-    color: 'bg-pink-100 text-pink-600',
+    gradient: 'from-pink-500 to-rose-500',
+    bgGradient: 'from-pink-500/10 to-rose-500/10',
   },
 ];
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 lg:py-32 bg-white">
-      <div className="container mx-auto px-6">
+    <section className="py-28 lg:py-40 bg-slate-50 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-100 rounded-full blur-[150px] opacity-60" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-100 rounded-full blur-[150px] opacity-60" />
+      
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
         {/* Section header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[hsl(220,60%,20%)] mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <span className="inline-block px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-6">
+            Powerful Features
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
             Everything You Need to Manage
-            <span className="text-[hsl(217,91%,60%)]"> Academic Excellence</span>
+            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Academic Excellence
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-xl text-slate-600 leading-relaxed">
             A complete platform designed for educational institutions to streamline faculty management and performance tracking.
           </p>
         </div>
@@ -61,25 +75,30 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="group p-6 rounded-2xl border border-border hover:border-[hsl(217,91%,60%)]/30 hover:shadow-lg transition-all duration-300 bg-card"
+              className="group relative p-8 rounded-3xl bg-white border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
             >
-              <div className={`w-14 h-14 rounded-xl ${feature.color} flex items-center justify-center mb-5`}>
-                <feature.icon className="w-7 h-7" />
+              {/* Hover gradient background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              
+              <div className="relative z-10">
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 shadow-lg`}>
+                  <feature.icon className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-600 leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {feature.description}
-              </p>
             </div>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <Button 
-            className="bg-[hsl(45,93%,55%)] hover:bg-[hsl(45,93%,45%)] text-[hsl(220,60%,15%)] font-semibold px-8 py-6 text-lg rounded-lg"
+            className="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-900 font-bold px-10 py-7 text-lg rounded-2xl shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-105"
           >
             Explore All Features
             <ArrowRight className="ml-2 h-5 w-5" />
