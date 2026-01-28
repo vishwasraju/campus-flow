@@ -1,4 +1,4 @@
-import { Quote } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
 
 const testimonials = [
   {
@@ -6,34 +6,43 @@ const testimonials = [
     author: "Dr. Priya Sharma",
     role: "HOD, Computer Science",
     avatar: "PS",
-    color: "bg-blue-500",
+    gradient: "from-blue-500 to-cyan-500",
   },
   {
     quote: "Managing faculty leave and timetables across departments is now effortless. The dashboard gives me complete visibility into all activities.",
     author: "Dr. Suresh Reddy",
     role: "Principal",
     avatar: "SR",
-    color: "bg-green-500",
+    gradient: "from-emerald-500 to-teal-500",
   },
   {
     quote: "I love how I can track all my CPS credits in one place. The evidence upload feature and real-time status updates are game-changers.",
     author: "Dr. Rajesh Kumar",
     role: "Associate Professor, CSE",
     avatar: "RK",
-    color: "bg-purple-500",
+    gradient: "from-purple-500 to-pink-500",
   },
 ];
 
 export function TestimonialsSection() {
   return (
-    <section className="py-20 lg:py-32 bg-white">
-      <div className="container mx-auto px-6">
+    <section className="py-28 lg:py-40 bg-white relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-amber-100 rounded-full blur-[150px] opacity-40" />
+      <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-blue-100 rounded-full blur-[150px] opacity-40" />
+      
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
         {/* Section header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[hsl(220,60%,20%)] mb-4">
-            What Our <span className="text-[hsl(217,91%,60%)]">Faculty</span> Says
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <span className="inline-block px-4 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold mb-6">
+            Testimonials
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+            What Our
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent"> Faculty </span>
+            Says
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-xl text-slate-600">
             Hear from the educators who use our platform every day.
           </p>
         </div>
@@ -43,24 +52,31 @@ export function TestimonialsSection() {
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="relative p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-shadow duration-300"
+              className="relative group p-8 rounded-3xl bg-white border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
             >
               {/* Quote icon */}
-              <div className="absolute -top-4 left-8 w-10 h-10 bg-[hsl(45,93%,55%)] rounded-lg flex items-center justify-center">
-                <Quote className="w-5 h-5 text-[hsl(220,60%,15%)]" />
+              <div className={`absolute -top-5 left-8 w-12 h-12 bg-gradient-to-br ${testimonial.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
+                <Quote className="w-6 h-6 text-white" />
               </div>
               
-              <p className="text-foreground leading-relaxed mt-4 mb-6">
+              {/* Stars */}
+              <div className="flex gap-1 mb-4 mt-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              
+              <p className="text-slate-700 leading-relaxed mb-8 text-lg">
                 "{testimonial.quote}"
               </p>
               
               <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 ${testimonial.color} rounded-full flex items-center justify-center text-white font-semibold`}>
+                <div className={`w-14 h-14 bg-gradient-to-br ${testimonial.gradient} rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg`}>
                   {testimonial.avatar}
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground">{testimonial.author}</div>
-                  <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                  <div className="font-bold text-slate-900">{testimonial.author}</div>
+                  <div className="text-sm text-slate-500">{testimonial.role}</div>
                 </div>
               </div>
             </div>
