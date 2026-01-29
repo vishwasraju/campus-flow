@@ -1,94 +1,110 @@
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Zap, Shield, Globe, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Zap, Bot, MessageSquare } from 'lucide-react';
+
+const services = [
+  {
+    icon: Zap,
+    title: 'Workflow Automation',
+    subtitle: 'Automate repetitive tasks',
+    description:
+      'We help you streamline internal operations by automating manual workflows like data entry, reporting, and approval chains—saving time and cutting down errors.',
+    tags: ['Internal Task Bots', '100+ Automations'],
+  },
+  {
+    icon: Bot,
+    title: 'AI Assistant',
+    subtitle: 'Delegate Daily Tasks',
+    description:
+      'From managing calendars to drafting emails and summarizing meetings, our AI assistants work around the clock to keep your institution running smarter and faster.',
+    tags: ['Summaries', 'Scheduling', 'Many more'],
+  },
+];
 
 export function CollaborationSection() {
-  const benefits = [
-    { icon: Zap, text: 'Real-time approval notifications' },
-    { icon: Shield, text: 'Department-wise dashboards' },
-    { icon: Globe, text: 'Cross-functional CPS activities' },
-    { icon: Users, text: 'Centralized document management' },
-  ];
-
   return (
-    <section className="py-28 lg:py-40 bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[150px]" />
-      </div>
-      
+    <section id="about" className="py-24 lg:py-32 bg-[#0a0a0f] relative overflow-hidden">
+      {/* Subtle purple glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-600/5 rounded-full blur-[150px]" />
+
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          {/* Left - Illustration */}
-          <div className="relative order-2 lg:order-1">
-            <div className="relative">
-              {/* Central hub */}
-              <div className="relative w-72 h-72 mx-auto">
-                {/* Outer ring */}
-                <div className="absolute inset-0 rounded-full border border-slate-700/50" />
-                <div className="absolute inset-4 rounded-full border border-slate-700/30" />
-                <div className="absolute inset-8 rounded-full border border-slate-700/20" />
-                
-                {/* Center icon */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl shadow-2xl flex items-center justify-center border border-slate-700">
-                  <Users className="w-12 h-12 text-blue-400" />
+        <div className="grid lg:grid-cols-2 gap-8">
+          {services.map((service, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-violet-500/30 transition-all duration-300"
+            >
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center flex-shrink-0">
+                  <service.icon className="w-6 h-6 text-violet-400" />
                 </div>
-                
-                {/* Orbiting avatars */}
-                {[
-                  { color: 'from-blue-400 to-blue-600', position: 'top-0 left-1/2 -translate-x-1/2 -translate-y-2', label: 'CSE' },
-                  { color: 'from-emerald-400 to-emerald-600', position: 'top-1/4 right-0 translate-x-2', label: 'AIML' },
-                  { color: 'from-purple-400 to-purple-600', position: 'bottom-1/4 right-0 translate-x-2', label: 'ECE' },
-                  { color: 'from-orange-400 to-orange-600', position: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-2', label: 'EEE' },
-                  { color: 'from-pink-400 to-pink-600', position: 'bottom-1/4 left-0 -translate-x-2', label: 'MECH' },
-                  { color: 'from-cyan-400 to-cyan-600', position: 'top-1/4 left-0 -translate-x-2', label: 'AIDS' },
-                ].map((item, i) => (
-                  <div key={i} className={`absolute ${item.position}`}>
-                    <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-2xl shadow-lg flex items-center justify-center text-white text-xs font-bold border-2 border-slate-900`}>
-                      {item.label}
-                    </div>
-                  </div>
+                <div>
+                  <p className="text-violet-400 text-sm font-medium">{service.title}</p>
+                  <h3 className="text-2xl font-bold text-white">{service.subtitle}</h3>
+                </div>
+              </div>
+              <p className="text-gray-400 leading-relaxed mb-6">{service.description}</p>
+              <div className="flex flex-wrap gap-2">
+                {service.tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-300 text-sm"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* AI Chat Preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-12 p-8 rounded-2xl bg-white/[0.02] border border-white/10"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center">
+              <MessageSquare className="w-5 h-5 text-violet-400" />
+            </div>
+            <div>
+              <h4 className="text-white font-semibold">What can I help with?</h4>
+              <p className="text-gray-500 text-sm">
+                Whether you need help with approvals or making changes to your schedule, just give me a command
+              </p>
             </div>
           </div>
 
-          {/* Right - Content */}
-          <div className="space-y-8 order-1 lg:order-2">
-            <span className="inline-block px-4 py-2 rounded-full bg-blue-500/10 text-blue-400 text-sm font-semibold border border-blue-500/20">
-              Collaboration
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              Work Together Across
-              <span className="block bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Departments
-              </span>
-            </h2>
-            <p className="text-xl text-slate-400 leading-relaxed">
-              Connect faculty members from CSE, AIML, AIDS, ECE, EEE, and MECH departments. 
-              Share resources, collaborate on interdisciplinary projects, and maintain 
-              seamless communication with role-based access control.
-            </p>
-            
-            <div className="grid sm:grid-cols-2 gap-4 pt-4">
-              {benefits.map((item, index) => (
-                <div key={index} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/50 border border-slate-700/50 backdrop-blur-sm">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <item.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-slate-300 font-medium">{item.text}</span>
-                </div>
-              ))}
+          {/* Mock input */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400">Generate a CPS report</span>
+              <motion.span
+                className="w-0.5 h-5 bg-violet-400"
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
             </div>
-            
-            <Button 
-              className="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-900 font-bold px-8 py-7 text-lg rounded-2xl shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 transition-all duration-300 hover:scale-105 mt-4"
-            >
-              Try It Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
           </div>
-        </div>
+
+          {/* Quick actions */}
+          <div className="flex flex-wrap gap-2">
+            {['Add document', 'Analyze', 'Generate Report', 'Schedule', 'E-mail Sending'].map((action) => (
+              <span
+                key={action}
+                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-sm hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+              >
+                {action}
+              </span>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
