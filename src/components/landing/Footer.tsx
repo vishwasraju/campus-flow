@@ -1,127 +1,93 @@
-import { GraduationCap, Twitter, Linkedin, Github, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { GraduationCap, Twitter, Linkedin, Github } from 'lucide-react';
+
+const footerLinks = {
+  Product: [
+    { name: 'Features', href: '#features' },
+    { name: 'Pricing', href: '#pricing' },
+    { name: 'Integrations', href: '#' },
+    { name: 'Changelog', href: '#' },
+  ],
+  Company: [
+    { name: 'About', href: '#about' },
+    { name: 'Blog', href: '#' },
+    { name: 'Careers', href: '#' },
+    { name: 'Contact', href: '#contact' },
+  ],
+  Resources: [
+    { name: 'Documentation', href: '#' },
+    { name: 'Help Center', href: '#' },
+    { name: 'API Reference', href: '#' },
+    { name: 'Status', href: '#' },
+  ],
+  Legal: [
+    { name: 'Privacy', href: '#' },
+    { name: 'Terms', href: '#' },
+    { name: 'Cookies', href: '#' },
+    { name: 'Licenses', href: '#' },
+  ],
+};
+
+const socialLinks = [
+  { icon: Twitter, href: '#', label: 'Twitter' },
+  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Github, href: '#', label: 'GitHub' },
+];
 
 export function Footer() {
-  const links = {
-    product: [
-      { name: 'Features', href: '#features' },
-      { name: 'Pricing', href: '#' },
-      { name: 'Documentation', href: '#' },
-      { name: 'Updates', href: '#' },
-    ],
-    company: [
-      { name: 'About Us', href: '#about' },
-      { name: 'Careers', href: '#' },
-      { name: 'Contact', href: '#' },
-      { name: 'Partners', href: '#' },
-    ],
-    resources: [
-      { name: 'Help Center', href: '#' },
-      { name: 'Community', href: '#' },
-      { name: 'Guidelines', href: '#' },
-      { name: 'Status', href: '#' },
-    ],
-  };
-
-  const socials = [
-    { icon: Twitter, href: '#' },
-    { icon: Linkedin, href: '#' },
-    { icon: Github, href: '#' },
-    { icon: Mail, href: '#' },
-  ];
-
   return (
-    <footer className="bg-slate-950 text-white pt-20 pb-10 relative overflow-hidden">
-      {/* Background effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[200px] bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-[100px]" />
-      
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
-          {/* Brand */}
-          <div className="lg:col-span-2 space-y-6">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl blur-md opacity-60 group-hover:opacity-100 transition-opacity" />
-                <div className="relative w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <GraduationCap className="w-6 h-6 text-slate-900" />
-                </div>
+    <footer className="bg-[#0a0a0f] border-t border-white/10">
+      <div className="container mx-auto px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-12">
+          {/* Logo & description */}
+          <div className="col-span-2">
+            <Link to="/" className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-2xl font-bold">CPS Portal</span>
+              <span className="text-white font-bold text-lg">CPS PORTAL</span>
             </Link>
-            <p className="text-slate-400 leading-relaxed max-w-md">
-              A comprehensive platform for tracking faculty performance, 
-              managing academic workflows, and streamlining administrative tasks.
+            <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+              Intelligent automation for modern academic institutions. Streamline faculty management and boost performance.
             </p>
-            {/* Social links */}
-            <div className="flex gap-3">
-              {socials.map((social, i) => (
-                <a 
-                  key={i}
-                  href={social.href} 
-                  className="w-10 h-10 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center justify-center transition-colors"
-                >
-                  <social.icon className="w-4 h-4 text-slate-400" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Links */}
-          <div>
-            <h4 className="font-bold mb-6 text-white">Product</h4>
-            <ul className="space-y-4">
-              {links.product.map((link) => (
-                <li key={link.name}>
-                  <a href={link.href} className="text-slate-400 hover:text-white transition-colors">
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold mb-6 text-white">Company</h4>
-            <ul className="space-y-4">
-              {links.company.map((link) => (
-                <li key={link.name}>
-                  <a href={link.href} className="text-slate-400 hover:text-white transition-colors">
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold mb-6 text-white">Resources</h4>
-            <ul className="space-y-4">
-              {links.resources.map((link) => (
-                <li key={link.name}>
-                  <a href={link.href} className="text-slate-400 hover:text-white transition-colors">
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {Object.entries(footerLinks).map(([category, links]) => (
+            <div key={category}>
+              <h4 className="text-white font-semibold mb-4">{category}</h4>
+              <ul className="space-y-3">
+                {links.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.href}
+                      className="text-gray-500 hover:text-white transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-slate-800 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-slate-500 text-sm">
-            © 2024 College Platform System. All rights reserved.
+        {/* Bottom bar */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm">
+            © {new Date().getFullYear()} CPS Portal. All rights reserved.
           </p>
-          <div className="flex gap-8">
-            <a href="#" className="text-slate-500 hover:text-white transition-colors text-sm">
-              Privacy Policy
-            </a>
-            <a href="#" className="text-slate-500 hover:text-white transition-colors text-sm">
-              Terms of Service
-            </a>
-            <a href="#" className="text-slate-500 hover:text-white transition-colors text-sm">
-              Cookies
-            </a>
+          <div className="flex items-center gap-4">
+            {socialLinks.map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:border-violet-500/50 transition-all"
+                aria-label={social.label}
+              >
+                <social.icon className="w-5 h-5" />
+              </a>
+            ))}
           </div>
         </div>
       </div>
