@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,52 +21,56 @@ import Timetable from "./pages/Timetable";
 import Events from "./pages/Events";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import Circulars from "./pages/Circulars";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-    <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <CPSProvider>
-        <LeaveProvider>
-        <TimetableProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              
-              {/* Protected Routes - wrapped in DashboardLayout */}
-              <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-              <Route path="/cps/new" element={<DashboardLayout><CPSEntry /></DashboardLayout>} />
-              <Route path="/cps/records" element={<DashboardLayout><CPSRecords /></DashboardLayout>} />
-              <Route path="/approvals/hod" element={<DashboardLayout><HODApprovals /></DashboardLayout>} />
-              <Route path="/approvals/principal" element={<DashboardLayout><PrincipalApprovals /></DashboardLayout>} />
-              
-              {/* Placeholder routes for other modules */}
-              <Route path="/circulars" element={<DashboardLayout><ComingSoon title="Circulars" /></DashboardLayout>} />
-              <Route path="/events" element={<DashboardLayout><Events /></DashboardLayout>} />
-              <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
-              <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
-              <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
-              <Route path="/reports" element={<DashboardLayout><ComingSoon title="Reports" /></DashboardLayout>} />
-              
-              {/* Landing page */}
-              <Route path="/" element={<LandingPage />} />
-              
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-        </TimetableProvider>
-        </LeaveProvider>
-      </CPSProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <AuthProvider>
+        <CPSProvider>
+          <LeaveProvider>
+            <TimetableProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+
+                    {/* Protected Routes - wrapped in DashboardLayout */}
+                    <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+                    <Route path="/cps/new" element={<DashboardLayout><CPSEntry /></DashboardLayout>} />
+                    <Route path="/cps/records" element={<DashboardLayout><CPSRecords /></DashboardLayout>} />
+                    <Route path="/approvals/hod" element={<DashboardLayout><HODApprovals /></DashboardLayout>} />
+                    <Route path="/approvals/principal" element={<DashboardLayout><PrincipalApprovals /></DashboardLayout>} />
+
+                    {/* Placeholder routes for other modules */}
+                    {/* Circulars Route */}
+                    <Route path="/circulars" element={<DashboardLayout><Circulars /></DashboardLayout>} />
+                    <Route path="/events" element={<DashboardLayout><Events /></DashboardLayout>} />
+                    <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
+                    <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
+                    <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
+                    <Route path="/reports" element={<DashboardLayout><ComingSoon title="Reports" /></DashboardLayout>} />
+
+                    {/* Landing page */}
+                    <Route path="/" element={<LandingPage />} />
+
+                    {/* 404 */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </TooltipProvider>
+            </TimetableProvider>
+          </LeaveProvider>
+        </CPSProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  </QueryClientProvider >
 );
 
 // Placeholder component for modules not yet implemented

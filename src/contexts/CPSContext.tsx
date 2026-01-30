@@ -15,7 +15,7 @@ interface CPSContextType {
 
 const CPSContext = createContext<CPSContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'cps_entries';
+const STORAGE_KEY = 'cps_entries_v2';
 
 // Demo CPS entries
 const DEMO_ENTRIES: CPSEntry[] = [
@@ -28,7 +28,7 @@ const DEMO_ENTRIES: CPSEntry[] = [
     activityType: 'SCI Journal Publication',
     description: 'Published research paper on Machine Learning algorithms in IEEE Transactions',
     date: '2024-01-15',
-    credits: 15,
+    credits: 45,
     status: 'approved',
     evidence: 'https://doi.org/example',
     submittedAt: '2024-01-16T10:00:00Z',
@@ -44,7 +44,7 @@ const DEMO_ENTRIES: CPSEntry[] = [
     activityType: 'Workshop/FDP Conducted',
     description: 'Conducted 5-day FDP on Deep Learning and Neural Networks',
     date: '2024-02-10',
-    credits: 10,
+    credits: 45,
     status: 'pending_hod',
     submittedAt: '2024-02-11T10:00:00Z',
   },
@@ -57,7 +57,7 @@ const DEMO_ENTRIES: CPSEntry[] = [
     activityType: 'MoU Signed with Industry',
     description: 'Signed MoU with TCS for internship program',
     date: '2024-01-20',
-    credits: 15,
+    credits: 45,
     status: 'pending_principal',
     submittedAt: '2024-01-21T10:00:00Z',
     hodApprovedAt: '2024-01-22T11:00:00Z',

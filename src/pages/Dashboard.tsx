@@ -21,10 +21,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { 
-  FileText, 
-  ClipboardCheck, 
-  Clock, 
+import {
+  FileText,
+  ClipboardCheck,
+  Clock,
   TrendingUp,
   BookOpen,
   Briefcase,
@@ -41,6 +41,7 @@ import { ROLE_LABELS } from '@/types/auth';
 import { CPS_CATEGORY_LABELS, CPSEntry, APPROVAL_STATUS_LABELS, ApprovalStatus } from '@/types/cps';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import CpsScoreWidget from '@/components/cps/CpsScoreWidget';
 
 const statusStyles: Record<ApprovalStatus, string> = {
   draft: 'bg-secondary text-secondary-foreground',
@@ -80,7 +81,7 @@ const StatCard = ({ title, value, subtitle, icon: Icon, iconBg, iconColor }: Sta
 const Dashboard = () => {
   const { user, currentRole } = useAuth();
   const { getPendingHODApprovals, updateEntry } = useCPS();
-  
+
   const [selectedEntry, setSelectedEntry] = useState<CPSEntry | null>(null);
   const [viewingEntry, setViewingEntry] = useState<CPSEntry | null>(null);
   const [remarks, setRemarks] = useState('');
@@ -127,10 +128,11 @@ const Dashboard = () => {
             {user?.name} • {currentRole && ROLE_LABELS[currentRole]} • {user?.department}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <Badge variant="outline" className="py-1.5 px-3">
             Academic Year 2024-25
           </Badge>
+          <CpsScoreWidget />
         </div>
       </div>
 
@@ -173,56 +175,7 @@ const Dashboard = () => {
             />
           </div>
 
-          {/* Category Breakdown */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">CPS Category Breakdown</CardTitle>
-              <CardDescription>Credits earned across different categories</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-purple-50 border border-purple-100">
-                  <div className="p-3 rounded-xl bg-purple-100">
-                    <FlaskConical className="h-5 w-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Research</p>
-                    <p className="text-2xl font-bold">{facultyStats.categoryBreakdown.research}</p>
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-cyan-50 border border-cyan-100">
-                  <div className="p-3 rounded-xl bg-cyan-100">
-                    <BookOpen className="h-5 w-5 text-cyan-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Academics</p>
-                    <p className="text-2xl font-bold">{facultyStats.categoryBreakdown.academics}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-orange-50 border border-orange-100">
-                  <div className="p-3 rounded-xl bg-orange-100">
-                    <Briefcase className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Industry</p>
-                    <p className="text-2xl font-bold">{facultyStats.categoryBreakdown.industry}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-100">
-                  <div className="p-3 rounded-xl bg-green-100">
-                    <Users className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Placement</p>
-                    <p className="text-2xl font-bold">{facultyStats.categoryBreakdown.placement}</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </>
       )}
 
@@ -513,15 +466,15 @@ const Dashboard = () => {
                     {viewingEntry.evidence?.startsWith('file:')
                       ? `File: ${viewingEntry.evidence.slice(5)}`
                       : (
-                          <a
-                            href={viewingEntry.evidence}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary underline hover:no-underline"
-                          >
-                            View Link
-                          </a>
-                        )}
+                        <a
+                          href={viewingEntry.evidence}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary underline hover:no-underline"
+                        >
+                          View Link
+                        </a>
+                      )}
                   </p>
                 </div>
               )}
