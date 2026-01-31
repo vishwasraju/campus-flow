@@ -33,27 +33,29 @@ export interface CPSActivityType {
 
 // Fixed point values for each activity type
 export const CPS_ACTIVITIES: CPSActivityType[] = [
-  
- // Research & Development (As per SJCIT CPS)
 
- { id: 'rd_project_20L', category: 'research', name: 'Externally Sponsored R&D Project (≥ ₹20 Lakhs)', credits: 10 },
- { id: 'rd_project_10_20L', category: 'research', name: 'Externally Sponsored R&D Project (₹10<20 Lakhs)', credits: 8 },
- { id: 'rd_project_5_10L', category: 'research', name: 'Externally Sponsored R&D Project (₹5<10 Lakhs)', credits: 6 },
- { id: 'rd_project_2_5L', category: 'research', name: 'Externally Sponsored R&D Project (₹2<5 Lakhs)', credits: 4 },
- { id: 'rd_project_1_2L', category: 'research', name: 'Externally Sponsored R&D Project (₹1<2 Lakhs)', credits: 2 },
- { id: 'rd_project_25k_1L', category: 'research', name: 'Externally Sponsored R&D Project (₹25K<1 Lakh)', credits: 1 },
+  // Research & Development (As per SJCIT CPS)
 
- { id: 'consultancy_project_research', category: 'research', name: 'Consultancy Project (per ₹1 Lakh)', credits: 1 }, // max 10
+  { id: 'rd_project_20L', category: 'research', name: 'Externally Sponsored R&D Project (≥ ₹20 Lakhs)', credits: 10 },
+  { id: 'rd_project_10_20L', category: 'research', name: 'Externally Sponsored R&D Project (₹10<20 Lakhs)', credits: 8 },
+  { id: 'rd_project_5_10L', category: 'research', name: 'Externally Sponsored R&D Project (₹5<10 Lakhs)', credits: 6 },
+  { id: 'rd_project_2_5L', category: 'research', name: 'Externally Sponsored R&D Project (₹2<5 Lakhs)', credits: 4 },
+  { id: 'rd_project_1_2L', category: 'research', name: 'Externally Sponsored R&D Project (₹1<2 Lakhs)', credits: 2 },
+  { id: 'rd_project_25k_1L', category: 'research', name: 'Externally Sponsored R&D Project (₹25K<1 Lakh)', credits: 1 },
 
- { id: 'patent_granted', category: 'research', name: 'Patent Granted', credits: 10 },
- { id: 'patent_published', category: 'research', name: 'Patent Published', credits: 5 },
+  { id: 'consultancy_project_research', category: 'research', name: 'Consultancy Project (per ₹1 Lakh)', credits: 1 }, // max 10
 
- { id: 'phd_awarded', category: 'research', name: 'PhD Guidance   Awarded / Thesis Submitted', credits: 10 },
- { id: 'phd_pursuing', category: 'research', name: 'PhD Guidance  Ongoing', credits: 2 }, // max 10
+  { id: 'patent_granted', category: 'research', name: 'Patent Granted', credits: 10 },
+  { id: 'patent_published', category: 'research', name: 'Patent Published', credits: 5 },
 
- { id: 'journal_scopus_sci', category: 'research', name: 'Journal / Book Chapter (SCI / Scopus)', credits: 4 }, // max 10
+  { id: 'phd_awarded', category: 'research', name: 'PhD Guidance   Awarded / Thesis Submitted', credits: 10 },
+  { id: 'phd_pursuing', category: 'research', name: 'PhD Guidance  Ongoing', credits: 2 }, // max 10
 
- { id: 'conf_indexed', category: 'research', name: 'Conference Paper (SCI / Scopus / WoS / Intl.)', credits: 1 }, // max 10
+  { id: 'journal_scopus_sci', category: 'research', name: 'Journal / Book Chapter (SCI / Scopus)', credits: 4 }, // max 10
+
+  { id: 'conf_indexed', category: 'research', name: 'Conference Paper (SCI / Scopus / WoS / Intl.)', credits: 1 }, // max 10
+
+  { id: 'conference_organised_role', category: 'research', name: 'National / International Conference Organised (Chairman / Secretary / Convener / Session Chair / Session Co-Chair)', credits: 1 },
 
 
   // Academics & Teaching

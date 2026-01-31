@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
@@ -9,13 +9,14 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
-import { 
-  FlaskConical, 
-  BookOpen, 
-  Briefcase, 
-  Users, 
-  Save, 
+import {
+  FlaskConical,
+  BookOpen,
+  Briefcase,
+  Users,
+  Save,
   Send,
   AlertCircle,
   CheckCircle2,
@@ -36,8 +37,8 @@ const categoryIcons: Record<CPSCategory, React.ComponentType<{ className?: strin
 const CPSEntry = () => {
   const navigate = useNavigate();
   const { user, currentRole } = useAuth();
-  const { addEntry } = useCPS();
-  
+  const { addEntry, entries } = useCPS();
+
   const [activeCategory, setActiveCategory] = useState<CPSCategory>('research');
   const [selectedActivity, setSelectedActivity] = useState<string>('');
   const [description, setDescription] = useState('');
@@ -48,6 +49,12 @@ const CPSEntry = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Research specific state
+  const [involvementType, setInvolvementType] = useState<'solo' | 'multi'>('solo');
+  const [researchRole, setResearchRole] = useState<'principal' | 'co-investigator'>('principal');
+  const [coInvestigatorCount, setCoInvestigatorCount] = useState<number | ''>(1);
+  const [consultancyAmount, setConsultancyAmount] = useState<number | ''>('');
+
   const getActivitiesByCategory = (category: CPSCategory): CPSActivityType[] => {
     return CPS_ACTIVITIES.filter((a) => a.category === category);
   };
@@ -56,9 +63,147 @@ const CPSEntry = () => {
     return CPS_ACTIVITIES.find((a) => a.id === selectedActivity);
   };
 
+  const isResearchInvolvementActivity = selectedActivity.startsWith('rd_project_') || selectedActivity.startsWith('patent_');
+  const isConsultancy = selectedActivity === 'consultancy_project_research';
+  const isPhDActivity = selectedActivity === 'phd_awarded' || selectedActivity === 'phd_pursuing';
+  const isJournalActivity = selectedActivity === 'journal_scopus_sci';
+  const isConferenceActivity = selectedActivity === 'conf_indexed';
+  const isConferenceOrganised = selectedActivity === 'conference_organised_role';
+
+  const shouldShowInvolvementOptions = isResearchInvolvementActivity || isPhDActivity || isJournalActivity || isConferenceActivity;
+
+  // Calculate past credits for Conference Organised
+  const pastConfOrganisedCredits = isConferenceOrganised && user ? entries
+    .filter(e =>
+      e.facultyId === user.id &&
+      e.activityType === 'National / International Conference Organised (Chairman / Secretary / Convener / Session Chair / Session Co-Chair)' &&
+      (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
+    )
+    .reduce((sum, e) => sum + e.credits, 0) : 0;
+
+  // Calculate past credits for Journal
+  const pastJournalCredits = isJournalActivity && user ? entries
+    .filter(e =>
+      e.facultyId === user.id &&
+      e.activityType === 'Journal / Book Chapter (SCI / Scopus)' &&
+      (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
+    )
+    .reduce((sum, e) => sum + e.credits, 0) : 0;
+
+  // Calculate past credits for Conference Paper
+  const pastConfPaperCredits = isConferenceActivity && user ? entries
+    .filter(e =>
+      e.facultyId === user.id &&
+      e.activityType === 'Conference Paper (SCI / Scopus / WoS / Intl.)' &&
+      (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
+    )
+    .reduce((sum, e) => sum + e.credits, 0) : 0;
+
+  const getRoleLabels = () => {
+    if (isPhDActivity) {
+      return {
+        principal: 'Main Guide',
+        coInvestigator: 'Co-Supervisor / Guide',
+        solo: 'Single Guide',
+        multi: 'Multiple Guides'
+      };
+    }
+    if (isJournalActivity || isConferenceActivity) {
+      return {
+        principal: 'First Author / Main Supervisor',
+        coInvestigator: 'Co-Author',
+        solo: 'Solo',
+        multi: 'Multi-person / Team'
+      };
+    }
+    if (selectedActivity.startsWith('patent_')) {
+      return {
+        principal: 'Principal Inventor',
+        coInvestigator: 'Co-inventor',
+        solo: 'Solo',
+        multi: 'Multi-person / Team'
+      };
+    }
+    return {
+      principal: 'Principal Investigator',
+      coInvestigator: 'Co-investigator',
+      solo: 'Solo',
+      multi: 'Multi-person / Team'
+    };
+  };
+
+  const labels = getRoleLabels();
+
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category as CPSCategory);
     setSelectedActivity('');
+    setInvolvementType('solo');
+    setResearchRole('principal');
+    setCoInvestigatorCount(1);
+    setConsultancyAmount('');
+  };
+
+  const calculateCredits = (activity: CPSActivityType) => {
+    if (activeCategory !== 'research') return activity.credits;
+
+    if (isConferenceOrganised) {
+      // Max 3 points cumulative
+      const remainingCap = Math.max(0, 3 - pastConfOrganisedCredits);
+      return Math.min(activity.credits, remainingCap);
+    }
+
+    if (isConsultancy) {
+      const amount = Number(consultancyAmount) || 0;
+      return Math.min(amount, 10);
+    }
+
+    // Common logic for capping Journal and Conf Paper
+    let calculated = 0;
+
+    if (!shouldShowInvolvementOptions) {
+      calculated = activity.credits;
+    } else if (involvementType === 'solo') {
+      calculated = activity.credits;
+    } else if (isJournalActivity) {
+      // Journal Logic
+      if (researchRole === 'principal') {
+        calculated = 2;
+      } else {
+        const remainingCredits = 2;
+        const count = Number(coInvestigatorCount) || 1;
+        calculated = Number((remainingCredits / count).toFixed(2));
+      }
+    } else if (isConferenceActivity) {
+      // Conf Paper Logic
+      if (researchRole === 'principal') {
+        calculated = activity.credits * 0.6;
+      } else {
+        const remainingCredits = activity.credits * 0.4;
+        const count = Number(coInvestigatorCount) || 1;
+        calculated = Number((remainingCredits / count).toFixed(2));
+      }
+    } else {
+      // Standard Logic (R&D, Patents, PhD)
+      if (researchRole === 'principal') {
+        calculated = activity.credits * 0.6;
+      } else {
+        const remainingCredits = activity.credits * 0.4;
+        const count = Number(coInvestigatorCount) || 1;
+        calculated = Number((remainingCredits / count).toFixed(2));
+      }
+    }
+
+    // Apply Cumulative Limits
+    if (isJournalActivity) {
+      const remainingCap = Math.max(0, 10 - pastJournalCredits);
+      return Math.min(calculated, remainingCap);
+    }
+    if (isConferenceActivity) {
+      const remainingCap = Math.max(0, 10 - pastConfPaperCredits);
+      return Math.min(calculated, remainingCap);
+    }
+
+    return calculated;
   };
 
   const handleSaveDraft = () => {
@@ -70,6 +215,35 @@ const CPSEntry = () => {
     const activity = getSelectedActivityDetails();
     if (!activity || !user) return;
 
+    let finalDescription = description;
+    let finalCredits = activity.credits;
+
+    if (activeCategory === 'research') {
+      finalCredits = calculateCredits(activity);
+
+      if (shouldShowInvolvementOptions) {
+        const count = Number(coInvestigatorCount) || 1;
+
+        let roleLabel = labels.principal;
+        if (researchRole === 'co-investigator') roleLabel = labels.coInvestigator;
+
+        const involvementDetails = `
+---
+Involvement: ${involvementType === 'solo' ? 'Solo' : 'Multi-person'}
+${involvementType === 'multi' ? `Role: ${roleLabel}` : ''}
+${involvementType === 'multi' && researchRole === 'co-investigator' ? `Number of Co-Authors/Investigators: ${count}` : ''}
+`;
+        finalDescription += involvementDetails;
+      } else if (isConsultancy) {
+        const amount = Number(consultancyAmount) || 0;
+        const consultancyDetails = `
+---
+Consultancy Amount: ₹${amount} Lakhs
+`;
+        finalDescription += consultancyDetails;
+      }
+    }
+
     const evidence = evidenceFile ? `file:${evidenceFile.name}` : (evidenceLink.trim() || undefined);
     addEntry({
       facultyId: user.id,
@@ -77,9 +251,9 @@ const CPSEntry = () => {
       department: user.department,
       category: activeCategory,
       activityType: activity.name,
-      description,
+      description: finalDescription,
       date,
-      credits: activity.credits,
+      credits: finalCredits,
       status: 'draft',
       evidence,
     });
@@ -99,6 +273,35 @@ const CPSEntry = () => {
 
     setIsSubmitting(true);
 
+    let finalDescription = description;
+    let finalCredits = activity.credits;
+
+    if (activeCategory === 'research') {
+      finalCredits = calculateCredits(activity);
+
+      if (shouldShowInvolvementOptions) {
+        const count = Number(coInvestigatorCount) || 1;
+
+        let roleLabel = labels.principal;
+        if (researchRole === 'co-investigator') roleLabel = labels.coInvestigator;
+
+        const involvementDetails = `
+---
+Involvement: ${involvementType === 'solo' ? 'Solo' : 'Multi-person'}
+${involvementType === 'multi' ? `Role: ${roleLabel}` : ''}
+${involvementType === 'multi' && researchRole === 'co-investigator' ? `Number of Co-Authors/Investigators: ${count}` : ''}
+`;
+        finalDescription += involvementDetails;
+      } else if (isConsultancy) {
+        const amount = Number(consultancyAmount) || 0;
+        const consultancyDetails = `
+---
+Consultancy Amount: ₹${amount} Lakhs
+`;
+        finalDescription += consultancyDetails;
+      }
+    }
+
     const evidence = evidenceFile ? `file:${evidenceFile.name}` : (evidenceLink.trim() || undefined);
     addEntry({
       facultyId: user.id,
@@ -106,9 +309,9 @@ const CPSEntry = () => {
       department: user.department,
       category: activeCategory,
       activityType: activity.name,
-      description,
+      description: finalDescription,
       date,
-      credits: activity.credits,
+      credits: finalCredits,
       status: 'pending_hod',
       evidence,
       submittedAt: new Date().toISOString(),
@@ -120,6 +323,13 @@ const CPSEntry = () => {
   };
 
   const selectedActivityDetails = getSelectedActivityDetails();
+  const calculatedCredits = selectedActivityDetails ? calculateCredits(selectedActivityDetails) : 0;
+
+  // Display value for Credits Preview
+  // For Conf Organised: Show "Cumulative / Max"
+  const confOrganisedDisplay = isConferenceOrganised ? `${Math.min(pastConfOrganisedCredits + calculatedCredits, 3)}/3` : null;
+  const journalDisplay = isJournalActivity ? `${Math.min(pastJournalCredits + calculatedCredits, 10)}/10` : null;
+  const confPaperDisplay = isConferenceActivity ? `${Math.min(pastConfPaperCredits + calculatedCredits, 10)}/10` : null;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -180,6 +390,100 @@ const CPSEntry = () => {
                         </Select>
                       </div>
 
+                      {category === 'research' && selectedActivity && shouldShowInvolvementOptions && (
+                        <div className="p-4 border rounded-lg bg-card space-y-4 animate-in fade-in slide-in-from-top-2">
+                          <div className="space-y-3">
+                            <Label>Involvement Type</Label>
+                            <RadioGroup
+                              value={involvementType}
+                              onValueChange={(val: 'solo' | 'multi') => setInvolvementType(val)}
+                              className="flex gap-4"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="solo" id="solo" />
+                                <Label htmlFor="solo" className="font-normal cursor-pointer">
+                                  {labels.solo} (100% credit)
+                                </Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="multi" id="multi" />
+                                <Label htmlFor="multi" className="font-normal cursor-pointer">
+                                  {labels.multi}
+                                </Label>
+                              </div>
+                            </RadioGroup>
+                          </div>
+
+                          {involvementType === 'multi' && (
+                            <div className="space-y-3 pl-4 border-l-2 border-primary/20">
+                              <Label>Your Role</Label>
+                              <RadioGroup
+                                value={researchRole}
+                                onValueChange={(val: 'principal' | 'co-investigator') => setResearchRole(val)}
+                                className="flex gap-4 flex-wrap"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="principal" id="principal" />
+                                  <Label htmlFor="principal" className="font-normal cursor-pointer">
+                                    {labels.principal} ({isJournalActivity ? '50%' : '60%'})
+                                  </Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="co-investigator" id="co-investigator" />
+                                  <Label htmlFor="co-investigator" className="font-normal cursor-pointer">
+                                    {labels.coInvestigator}
+                                  </Label>
+                                </div>
+                              </RadioGroup>
+
+                              {researchRole === 'co-investigator' && (
+                                <div className="space-y-2 pt-2 max-w-[200px]">
+                                  <Label htmlFor="co-count">
+                                    Total Others (Co-Authors/Investigators)
+                                  </Label>
+                                  <Input
+                                    id="co-count"
+                                    type="number"
+                                    min="1"
+                                    value={coInvestigatorCount}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setCoInvestigatorCount(val === '' ? '' : parseInt(val));
+                                    }}
+                                  />
+                                  <p className="text-xs text-muted-foreground">
+                                    remaining {isJournalActivity ? '50%' : '40%'} shared equally
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {category === 'research' && isConsultancy && (
+                        <div className="p-4 border rounded-lg bg-card space-y-4 animate-in fade-in slide-in-from-top-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="consultancy-amount">Consultancy Amount (in Lakhs)</Label>
+                            <Input
+                              id="consultancy-amount"
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              placeholder="Enter amount (e.g., 5 for 5 Lakhs)"
+                              value={consultancyAmount}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setConsultancyAmount(val === '' ? '' : parseFloat(val));
+                              }}
+                            />
+                            <p className="text-xs text-muted-foreground">1 Credit point per ₹1 Lakh, max 10 points.</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Warning notes removed in favor of cumulative display */}
+
                       <div className="space-y-2">
                         <Label htmlFor="description">Description *</Label>
                         <Textarea
@@ -217,9 +521,8 @@ const CPSEntry = () => {
                             const f = e.dataTransfer.files[0];
                             if (f) setEvidenceFile(f);
                           }}
-                          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
-                            isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/50'
-                          }`}
+                          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${isDragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50 hover:bg-muted/50'
+                            }`}
                         >
                           <input
                             ref={fileInputRef}
@@ -296,10 +599,14 @@ const CPSEntry = () => {
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg bg-accent">
                     <div className="text-3xl font-bold text-center">
-                      {selectedActivityDetails.credits}
+                      {isConsultancy ? `${calculatedCredits}/10` :
+                        isConferenceOrganised ? confOrganisedDisplay :
+                          isJournalActivity ? journalDisplay :
+                            isConferenceActivity ? confPaperDisplay :
+                              calculatedCredits}
                     </div>
                     <div className="text-sm text-center text-muted-foreground">
-                      Credit Points
+                      {(isConsultancy || isJournalActivity || isConferenceActivity || isConferenceOrganised) ? 'Calculated Points (Max Cap)' : 'Calculated Points'}
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -310,6 +617,15 @@ const CPSEntry = () => {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>{CPS_CATEGORY_LABELS[activeCategory]}</span>
                     </div>
+                    {activeCategory === 'research' && shouldShowInvolvementOptions && involvementType !== 'solo' && (
+                      <div className="pt-2 text-xs text-muted-foreground border-t mt-2">
+                        <p>Activity Base: {selectedActivityDetails.credits} pts</p>
+                        <p>
+                          {`Role: ${labels.principal} (${isJournalActivity ? '50%' : '60%'})`}
+                          {researchRole === 'co-investigator' ? ` / ${labels.coInvestigator} (Share of ${isJournalActivity ? '50%' : '40%'})` : ''}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
