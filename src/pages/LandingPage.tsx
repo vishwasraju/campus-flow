@@ -4,14 +4,15 @@ import { FeaturesSection } from '@/components/landing/FeaturesSection';
 import { CollaborationSection } from '@/components/landing/CollaborationSection';
 import { StatsSection } from '@/components/landing/StatsSection';
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection';
+import { FAQSection } from '@/components/landing/FAQSection';
 import { CTASection } from '@/components/landing/CTASection';
 import { Footer } from '@/components/landing/Footer';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       <Navbar />
-      <main className="pt-16">
+      <main>
         <HeroSection />
         <section id="features">
           <FeaturesSection />
@@ -23,6 +24,7 @@ const LandingPage = () => {
         <section id="testimonials">
           <TestimonialsSection />
         </section>
+        <FAQSection />
         <CTASection />
       </main>
       <Footer />

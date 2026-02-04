@@ -61,17 +61,15 @@ const itemVariants = {
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 lg:py-32 bg-[#0a0a0f] relative overflow-hidden">
-      {/* Subtle grid background */}
-      <div className="absolute inset-0 opacity-10">
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={`h-${i}`}
-            className="absolute w-full border-t border-dashed border-gray-600"
-            style={{ top: `${i * 10}%` }}
-          />
-        ))}
-      </div>
+    <section id="features" className="py-24 lg:py-32 bg-[#0a0a0a] relative overflow-hidden">
+      {/* Subtle dot pattern */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+          backgroundSize: '40px 40px',
+        }}
+      />
 
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         {/* Section header */}
@@ -80,13 +78,18 @@ export function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-20"
         >
-          <span className="text-violet-400 text-sm font-medium mb-4 block">Our Services</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-            AI Solutions That Take Your Institution to the Next Level
+          <span className="text-amber-400/80 text-xs font-medium mb-6 block tracking-[0.3em] uppercase">
+            [ OUR SERVICES ]
+          </span>
+          <h2
+            className="text-4xl md:text-5xl lg:text-6xl font-serif font-normal text-white mb-6 leading-tight"
+            style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
+          >
+            Solutions That Take Your Institution to the Next Level
           </h2>
-          <p className="text-lg text-gray-400 leading-relaxed">
+          <p className="text-base text-white/50 leading-relaxed tracking-wide">
             We design, develop, and implement automation tools that help you work smarter, not harder
           </p>
         </motion.div>
@@ -97,19 +100,19 @@ export function FeaturesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/10 rounded-2xl overflow-hidden"
         >
           {features.map((feature, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              className="group relative p-8 rounded-2xl bg-white/[0.02] border border-white/10 hover:border-violet-500/50 hover:bg-white/[0.04] transition-all duration-500"
+              className="group relative p-8 bg-[#0a0a0a] hover:bg-white/[0.02] transition-all duration-500"
             >
-              <div className="w-14 h-14 rounded-xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center mb-6 group-hover:bg-violet-600/30 transition-colors">
-                <feature.icon className="w-7 h-7 text-violet-400" />
+              <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:bg-amber-400/10 group-hover:border-amber-400/30 transition-all duration-300">
+                <feature.icon className="w-5 h-5 text-white/60 group-hover:text-amber-400 transition-colors" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+              <h3 className="text-lg font-medium text-white mb-3 tracking-wide">{feature.title}</h3>
+              <p className="text-white/40 leading-relaxed text-sm">{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>
