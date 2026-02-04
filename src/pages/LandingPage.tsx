@@ -17,13 +17,7 @@ const LandingPage = () => {
         <section id="features">
           <FeaturesSection />
         </section>
-        <section id="about">
-          <CollaborationSection />
-        </section>
-        <StatsSection />
-        <section id="testimonials">
-          <TestimonialsSection />
-        </section>
+
         <FAQSection />
         <CTASection />
       </main>
