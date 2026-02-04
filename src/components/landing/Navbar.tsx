@@ -21,16 +21,65 @@ export function Navbar() {
   ];
 
   return (
-    <div className="fixed top-6 left-5 right-0 z-50 flex justify-center px-4">
-      <nav className={`transition-all duration-300 w-full max-w-4xl bg-black rounded-full border border-white/10 shadow-lg ${isScrolled ? 'backdrop-blur-xl' : ''}`}>
-        <div className="px-6 py-3">
+    <motion.div
+      className="fixed left-0 right-0 z-40 flex justify-center px-4"
+      initial={{ y: -100, opacity: 0 }}
+      animate={{
+        y: 0,
+        opacity: 1,
+        top: isScrolled ? 24 : 56, // 24px = top-6, 56px = space for top bar
+      }}
+      transition={{
+        y: { duration: 0.8, ease: "easeOut" },
+        top: { duration: 0.3, type: "spring", stiffness: 260, damping: 20 },
+        opacity: { duration: 0.5 }
+      }}
+    >
+      <motion.nav
+        className={`transition-all duration-300 bg-black border border-white/10 shadow-lg overflow-hidden ${isScrolled ? 'backdrop-blur-xl' : ''}`}
+        initial={{ width: 58, height: 58, borderRadius: 50 }}
+        animate={{
+          width: "100%",
+          height: "auto",
+          borderRadius: 9999,
+        }}
+        transition={{
+          width: { delay: 1.0, duration: 0.8, ease: "easeInOut" },
+          height: { delay: 1.0, duration: 0.8, ease: "easeInOut" },
+          borderRadius: { delay: 1.0, duration: 0.4 }
+        }}
+        style={{ maxWidth: "56rem" }} // max-w-4xl equivalent
+      >
+        {/* Animated Slide Logo */}
+        <motion.div
+          className="absolute top-3 z-20"
+          initial={{ left: "50%", x: "-50%" }}
+          animate={{ left: "1.5rem", x: "0%" }}
+          transition={{
+            delay: 1.0,
+            duration: 0.8,
+            ease: "easeInOut"
+          }}
+        >
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 flex items-center justify-center">
+              <GraduationCap className="w-6 h-6 text-white" />
+            </div>
+          </Link>
+        </motion.div>
+
+        {/* Full Navbar Content */}
+        <motion.div
+          className="px-6 py-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4, duration: 0.4 }}
+        >
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-white" />
-              </div>
-            </Link>
+            {/* Logo Spacer (Invisible) to maintain layout */}
+            <div className="w-8 h-8 flex items-center justify-center opacity-0 pointer-events-none">
+              <GraduationCap className="w-6 h-6 text-white" />
+            </div>
 
             {/* Desktop Nav - Right Aligned Items */}
             <div className="hidden md:flex items-center gap-8">
@@ -138,8 +187,8 @@ export function Navbar() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-      </nav>
-    </div>
+        </motion.div>
+      </motion.nav>
+    </motion.div>
   );
 }
