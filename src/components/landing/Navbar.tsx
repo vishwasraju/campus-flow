@@ -50,24 +50,6 @@ export function Navbar() {
         }}
         style={{ maxWidth: "56rem" }} // max-w-4xl equivalent
       >
-        {/* Animated Slide Logo */}
-        <motion.div
-          className="absolute top-3 z-20"
-          initial={{ left: "50%", x: "-50%" }}
-          animate={{ left: "1.5rem", x: "0%" }}
-          transition={{
-            delay: 1.0,
-            duration: 0.8,
-            ease: "easeInOut"
-          }}
-        >
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-white" />
-            </div>
-          </Link>
-        </motion.div>
-
         {/* Full Navbar Content */}
         <motion.div
           className="px-6 py-3"
@@ -76,10 +58,12 @@ export function Navbar() {
           transition={{ delay: 1.4, duration: 0.4 }}
         >
           <div className="flex items-center justify-between">
-            {/* Logo Spacer (Invisible) to maintain layout */}
-            <div className="w-8 h-8 flex items-center justify-center opacity-0 pointer-events-none">
-              <GraduationCap className="w-6 h-6 text-white" />
-            </div>
+            {/* Logo - stays in normal flow */}
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 flex items-center justify-center">
+                <GraduationCap className="w-6 h-6 text-white" />
+              </div>
+            </Link>
 
             {/* Desktop Nav - Right Aligned Items */}
             <div className="hidden md:flex items-center gap-8">
