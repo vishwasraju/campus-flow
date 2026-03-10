@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { CPSProvider } from "@/contexts/CPSContext";
 import { LeaveProvider } from "@/contexts/LeaveContext";
 import { TimetableProvider } from "@/contexts/TimetableContext";
+import { TaskProvider } from "@/contexts/TaskContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
@@ -24,6 +25,7 @@ import NotFound from "./pages/NotFound";
 import Circulars from "./pages/Circulars";
 import Reports from "./pages/Reports";
 import AdminPanel from "./pages/AdminPanel";
+import Tasks from "./pages/Tasks";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +36,7 @@ const App = () => (
         <CPSProvider>
           <LeaveProvider>
             <TimetableProvider>
+            <TaskProvider>
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
@@ -56,7 +59,7 @@ const App = () => (
                     <Route path="/events" element={<DashboardLayout><Events /></DashboardLayout>} />
                     <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
                     <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
-                    <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
+                    <Route path="/tasks" element={<DashboardLayout><Tasks /></DashboardLayout>} />
                     <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
                     <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
 
@@ -68,6 +71,7 @@ const App = () => (
                   </Routes>
                 </BrowserRouter>
               </TooltipProvider>
+            </TaskProvider>
             </TimetableProvider>
           </LeaveProvider>
         </CPSProvider>
