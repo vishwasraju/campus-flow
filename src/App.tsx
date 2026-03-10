@@ -25,6 +25,7 @@ import NotFound from "./pages/NotFound";
 import Circulars from "./pages/Circulars";
 import Reports from "./pages/Reports";
 import AdminPanel from "./pages/AdminPanel";
+import Tasks from "./pages/Tasks";
 
 const queryClient = new QueryClient();
 
