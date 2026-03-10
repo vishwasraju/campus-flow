@@ -71,6 +71,7 @@ const App = () => (
                   </Routes>
                 </BrowserRouter>
               </TooltipProvider>
+            </TaskProvider>
             </TimetableProvider>
           </LeaveProvider>
         </CPSProvider>
