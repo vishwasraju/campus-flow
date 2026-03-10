@@ -36,6 +36,7 @@ const App = () => (
         <CPSProvider>
           <LeaveProvider>
             <TimetableProvider>
+            <TaskProvider>
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
