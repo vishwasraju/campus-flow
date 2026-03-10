@@ -22,6 +22,8 @@ import Events from "./pages/Events";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import Circulars from "./pages/Circulars";
+import Reports from "./pages/Reports";
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -55,7 +57,8 @@ const App = () => (
                     <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
                     <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
                     <Route path="/tasks" element={<DashboardLayout><ComingSoon title="Task Management" /></DashboardLayout>} />
-                    <Route path="/reports" element={<DashboardLayout><ComingSoon title="Reports" /></DashboardLayout>} />
+                    <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
+                    <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
 
                     {/* Landing page */}
                     <Route path="/" element={<LandingPage />} />

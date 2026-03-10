@@ -2,13 +2,25 @@ import { useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CPSEntry, ApprovalStatus } from '@/types/cps';
+import { CPSEntry, ApprovalStatus, CPS_CATEGORY_LABELS, APPROVAL_STATUS_LABELS } from '@/types/cps';
 import { toast } from 'sonner';
-import { CheckCircle2, Clock, FileText, Award } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Award, Download, Printer } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import CPSSidebar from '@/components/cps/CPSSidebar';
 import CPSEntryList from '@/components/cps/CPSEntryList';
 import CPSEntryDetail from '@/components/cps/CPSEntryDetail';
+import { format } from 'date-fns';
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
+import { downloadCSV, printReport } from '@/utils/reportUtils';
+
+/* ── helpers ────────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════ */
 const CPSRecords = () => {
   const { user } = useAuth();
   const { entries, updateEntry, deleteEntry } = useCPS();
@@ -17,7 +29,6 @@ const CPSRecords = () => {
 
   const myEntries = user ? entries.filter((e) => e.facultyId === user.id) : [];
 
-  // Counts for sidebar
   const counts = useMemo(() => ({
     all: myEntries.length,
     draft: myEntries.filter((e) => e.status === 'draft').length,
@@ -26,32 +37,22 @@ const CPSRecords = () => {
     rejected: myEntries.filter((e) => e.status === 'rejected').length,
   }), [myEntries]);
 
-  // Filter entries based on active filter
   const filteredEntries = useMemo(() => {
     switch (activeFilter) {
-      case 'draft':
-        return myEntries.filter((e) => e.status === 'draft');
-      case 'pending':
-        return myEntries.filter((e) => e.status === 'pending_hod' || e.status === 'pending_principal');
-      case 'approved':
-        return myEntries.filter((e) => e.status === 'approved');
-      case 'rejected':
-        return myEntries.filter((e) => e.status === 'rejected');
+      case 'draft': return myEntries.filter((e) => e.status === 'draft');
+      case 'pending': return myEntries.filter((e) => e.status === 'pending_hod' || e.status === 'pending_principal');
+      case 'approved': return myEntries.filter((e) => e.status === 'approved');
+      case 'rejected': return myEntries.filter((e) => e.status === 'rejected');
       case 'research':
       case 'academics':
       case 'industry':
-      case 'placement':
-        return myEntries.filter((e) => e.category === activeFilter);
-      default:
-        return myEntries;
+      case 'placement': return myEntries.filter((e) => e.category === activeFilter);
+      default: return myEntries;
     }
   }, [myEntries, activeFilter]);
 
   const handleSubmitDraft = (entry: CPSEntry) => {
-    updateEntry(entry.id, {
-      status: 'pending_hod',
-      submittedAt: new Date().toISOString(),
-    });
+    updateEntry(entry.id, { status: 'pending_hod', submittedAt: new Date().toISOString() });
     toast.success('Entry submitted for approval');
   };
 
@@ -63,8 +64,7 @@ const CPSRecords = () => {
   };
 
   const canCancelEntry =
-    user &&
-    selectedEntry &&
+    user && selectedEntry &&
     selectedEntry.facultyId === user.id &&
     (['draft', 'pending_hod', 'pending_principal'] as ApprovalStatus[]).includes(selectedEntry.status);
 
@@ -72,12 +72,60 @@ const CPSRecords = () => {
     .filter((e) => e.status === 'approved')
     .reduce((sum, e) => sum + e.credits, 0);
 
+  // All submitted (non-draft)
+  const submittedEntries = myEntries.filter(e => e.status !== 'draft');
+
+  const handleCSV = () => {
+    if (submittedEntries.length === 0) { toast.error('No submitted entries to export'); return; }
+    downloadCSV(submittedEntries, `CPS_Records_${user?.name?.replace(/\s+/g, '_')}`);
+    toast.success('CSV downloaded');
+  };
+
+  const handlePDF = () => {
+    if (submittedEntries.length === 0) { toast.error('No submitted entries to export'); return; }
+    const title = `CPS Credit Records Report - ${user?.name || 'Faculty'}`;
+    const metadata = [
+      { label: 'Faculty', value: user?.name || '' },
+      { label: 'Department', value: user?.department || '' },
+    ];
+    const summary = [
+      { label: 'Total Entries', value: submittedEntries.length },
+      { label: 'Approved', value: submittedEntries.filter(e => e.status === 'approved').length, color: '#16a34a' },
+      { label: 'Pending', value: submittedEntries.filter(e => e.status.startsWith('pending')).length, color: '#d97706' },
+      { label: 'Rejected', value: submittedEntries.filter(e => e.status === 'rejected').length, color: '#dc2626' },
+      { label: 'Approved Credits', value: totalCredits.toFixed(2), color: '#2563eb' },
+    ];
+    printReport(submittedEntries, title, metadata, summary);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">My CPS Records</h1>
-        <p className="text-muted-foreground">View and manage your CPS credit submissions</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">My CPS Records</h1>
+          <p className="text-muted-foreground">View and manage your CPS credit submissions</p>
+        </div>
+
+        {/* Download Button */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="gap-2" disabled={submittedEntries.length === 0}>
+              <Download className="w-4 h-4" />
+              Download Report
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={handleCSV} className="gap-2 cursor-pointer">
+              <FileText className="w-4 h-4" />
+              Export as CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handlePDF} className="gap-2 cursor-pointer">
+              <Printer className="w-4 h-4" />
+              Print / Save as PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Summary Cards */}
@@ -85,67 +133,42 @@ const CPSRecords = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Approved Credits</CardTitle>
-            <div className="p-2 rounded-lg bg-green-100">
-              <Award className="h-4 w-4 text-green-600" />
-            </div>
+            <div className="p-2 rounded-lg bg-green-100"><Award className="h-4 w-4 text-green-600" /></div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalCredits}</div>
-          </CardContent>
+          <CardContent><div className="text-2xl font-bold">{totalCredits.toFixed(2)}</div></CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Entries</CardTitle>
-            <div className="p-2 rounded-lg bg-blue-100">
-              <FileText className="h-4 w-4 text-blue-600" />
-            </div>
+            <div className="p-2 rounded-lg bg-blue-100"><FileText className="h-4 w-4 text-blue-600" /></div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{myEntries.length}</div>
-          </CardContent>
+          <CardContent><div className="text-2xl font-bold">{myEntries.length}</div></CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Approval</CardTitle>
-            <div className="p-2 rounded-lg bg-amber-100">
-              <Clock className="h-4 w-4 text-amber-600" />
-            </div>
+            <div className="p-2 rounded-lg bg-amber-100"><Clock className="h-4 w-4 text-amber-600" /></div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{counts.pending}</div>
-          </CardContent>
+          <CardContent><div className="text-2xl font-bold">{counts.pending}</div></CardContent>
         </Card>
-
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Drafts</CardTitle>
-            <div className="p-2 rounded-lg bg-gray-100">
-              <FileText className="h-4 w-4 text-gray-600" />
-            </div>
+            <CardTitle className="text-sm font-medium">Approved</CardTitle>
+            <div className="p-2 rounded-lg bg-gray-100"><CheckCircle2 className="h-4 w-4 text-green-600" /></div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{counts.draft}</div>
-          </CardContent>
+          <CardContent><div className="text-2xl font-bold">{counts.approved}</div></CardContent>
         </Card>
       </div>
 
       {/* Gmail-style Inbox Layout */}
       <div className="flex gap-4 min-h-[500px]">
-        <CPSSidebar 
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          counts={counts}
-        />
-
+        <CPSSidebar activeFilter={activeFilter} onFilterChange={setActiveFilter} counts={counts} />
         <CPSEntryList
           entries={filteredEntries}
           selectedEntry={selectedEntry}
           onSelectEntry={setSelectedEntry}
           onSubmitDraft={handleSubmitDraft}
         />
-
         {selectedEntry && (
           <CPSEntryDetail
             entry={selectedEntry}

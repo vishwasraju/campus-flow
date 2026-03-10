@@ -61,7 +61,7 @@ const itemVariants = {
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 lg:py-32 bg-[#0a0a0a] relative overflow-hidden">
+    <section id="features" className="py-24 lg:py-32 bg-transparent relative overflow-hidden">
       {/* Subtle dot pattern */}
       <div
         className="absolute inset-0 opacity-20"
@@ -106,7 +106,7 @@ export function FeaturesSection() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="group relative p-8 bg-[#0a0a0a] hover:bg-white/[0.02] transition-all duration-500"
+              className="group relative p-8 bg-black/40 backdrop-blur-md hover:bg-white/[0.05] transition-all duration-500"
             >
               <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:bg-amber-400/10 group-hover:border-amber-400/30 transition-all duration-300">
                 <feature.icon className="w-5 h-5 text-white/60 group-hover:text-amber-400 transition-colors" />

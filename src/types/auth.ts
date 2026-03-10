@@ -1,14 +1,14 @@
-export type UserRole = 'faculty' | 'hod' | 'principal';
+export type UserRole = 'faculty' | 'hod' | 'principal' | 'admin';
 
-export type Department = 
-  | 'AIML' 
-  | 'CSE' 
-  | 'AIDS' 
-  | 'ECE' 
-  | 'EEE' 
+export type Department =
+  | 'AIML'
+  | 'CSE'
+  | 'AIDS'
+  | 'ECE'
+  | 'EEE'
   | 'MECH';
 
-export type Designation = 
+export type Designation =
   | 'Assistant Professor'
   | 'Associate Professor'
   | 'Professor'
@@ -16,6 +16,14 @@ export type Designation =
   | 'Principal';
 
 export type Post = 'Faculty' | 'Head of Department' | 'Principal';
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  earnedAt: string;
+}
 
 export interface User {
   id: string;
@@ -27,6 +35,8 @@ export interface User {
   designation: Designation;
   usn: string;
   createdAt: string;
+  avatarUrl?: string;
+  achievements?: Achievement[];
 }
 
 export interface AuthState {
@@ -69,4 +79,5 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   faculty: 'Faculty',
   hod: 'Head of Department',
   principal: 'Principal',
+  admin: 'Administrator',
 };

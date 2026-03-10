@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Eye, EyeOff, AlertCircle, User, KeyRound } from 'lucide-react';
+import { GraduationCap, Eye, EyeOff, AlertCircle, User, KeyRound, Shield } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -35,12 +35,12 @@ const Login = () => {
     }
   };
 
-  const handleDemoLogin = async (userEmail: string) => {
+  const handleDemoLogin = async (userEmail: string, userPassword = 'password123') => {
     setEmail(userEmail);
-    setPassword('password123');
+    setPassword(userPassword);
     setIsLoading(true);
-    
-    const success = await login(userEmail, 'password123');
+
+    const success = await login(userEmail, userPassword);
     if (success) {
       navigate('/dashboard');
     }
@@ -124,47 +124,61 @@ const Login = () => {
               <p className="text-sm text-muted-foreground text-center mb-4">
                 Quick Demo Access
               </p>
-              <div className="grid gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
-                  className="w-full justify-start h-auto py-3 hover:bg-blue-50 hover:border-blue-200"
+                  className="w-full justify-start h-auto py-2 hover:bg-blue-50 hover:border-blue-200"
                   onClick={() => handleDemoLogin('rajesh.kumar@college.edu')}
                   disabled={isLoading}
                 >
-                  <div className="p-2 rounded-lg bg-blue-100 mr-3">
-                    <User className="w-4 h-4 text-blue-600" />
+                  <div className="p-1.5 rounded-lg bg-blue-100 mr-2">
+                    <User className="w-3.5 h-3.5 text-blue-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium">Faculty Account</div>
-                    <div className="text-xs text-muted-foreground">Dr. Rajesh Kumar (CSE)</div>
+                    <div className="font-medium text-xs">Faculty</div>
+                    <div className="text-[10px] text-muted-foreground truncate w-24 text-nowrap">Rajesh Kumar</div>
                   </div>
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full justify-start h-auto py-3 hover:bg-green-50 hover:border-green-200"
+                  className="w-full justify-start h-auto py-2 hover:bg-green-50 hover:border-green-200"
                   onClick={() => handleDemoLogin('priya.sharma@college.edu')}
                   disabled={isLoading}
                 >
-                  <div className="p-2 rounded-lg bg-green-100 mr-3">
-                    <User className="w-4 h-4 text-green-600" />
+                  <div className="p-1.5 rounded-lg bg-green-100 mr-2">
+                    <User className="w-3.5 h-3.5 text-green-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium">HOD Account</div>
-                    <div className="text-xs text-muted-foreground">Dr. Priya Sharma (CSE)</div>
+                    <div className="font-medium text-xs">HOD</div>
+                    <div className="text-[10px] text-muted-foreground truncate w-24 text-nowrap">Priya Sharma</div>
                   </div>
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full justify-start h-auto py-3 hover:bg-purple-50 hover:border-purple-200"
+                  className="w-full justify-start h-auto py-2 hover:bg-purple-50 hover:border-purple-200"
                   onClick={() => handleDemoLogin('suresh.reddy@college.edu')}
                   disabled={isLoading}
                 >
-                  <div className="p-2 rounded-lg bg-purple-100 mr-3">
-                    <User className="w-4 h-4 text-purple-600" />
+                  <div className="p-1.5 rounded-lg bg-purple-100 mr-2">
+                    <User className="w-3.5 h-3.5 text-purple-600" />
                   </div>
                   <div className="text-left">
-                    <div className="font-medium">Principal Account</div>
-                    <div className="text-xs text-muted-foreground">Dr. Suresh Reddy</div>
+                    <div className="font-medium text-xs">Principal</div>
+                    <div className="text-[10px] text-muted-foreground truncate w-24 text-nowrap">Suresh Reddy</div>
+                  </div>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-2 hover:bg-red-50 hover:border-red-200 border-red-100/50"
+                  onClick={() => handleDemoLogin('admin@college.edu', 'admin123')}
+                  disabled={isLoading}
+                >
+                  <div className="p-1.5 rounded-lg bg-red-100 mr-2">
+                    <Shield className="w-3.5 h-3.5 text-red-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium text-xs">Admin</div>
+                    <div className="text-[10px] text-muted-foreground">System Access</div>
                   </div>
                 </Button>
               </div>

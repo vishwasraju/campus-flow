@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 export function CTASection() {
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-black relative overflow-hidden">
+    <section id="contact" className="py-24 lg:py-32 bg-transparent relative overflow-hidden">
       {/* Subtle gradient */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-amber-400/5 rounded-full blur-[150px]" />
 

@@ -32,6 +32,11 @@ const DEMO_USERS: (User & { password: string })[] = [
     designation: 'Associate Professor',
     usn: 'FAC2020001',
     createdAt: new Date().toISOString(),
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh',
+    achievements: [
+      { id: '1', title: 'Research Pioneer', description: 'Published 5+ papers in SCI journals', icon: 'FlaskConical', earnedAt: new Date().toISOString() },
+      { id: '2', title: 'Early Bird', description: 'First to submit CPS records for the semester', icon: 'Zap', earnedAt: new Date().toISOString() },
+    ]
   },
   {
     id: '2',
@@ -44,6 +49,10 @@ const DEMO_USERS: (User & { password: string })[] = [
     designation: 'Head of Department',
     usn: 'HOD2018001',
     createdAt: new Date().toISOString(),
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
+    achievements: [
+      { id: '3', title: 'Academic Leader', description: 'Successfully managed department for 3 years', icon: 'GraduationCap', earnedAt: new Date().toISOString() },
+    ]
   },
   {
     id: '3',
@@ -56,6 +65,20 @@ const DEMO_USERS: (User & { password: string })[] = [
     designation: 'Principal',
     usn: 'PRIN2015001',
     createdAt: new Date().toISOString(),
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Suresh',
+  },
+  {
+    id: '4',
+    collegeId: 'ADM001',
+    name: 'College Admin',
+    email: 'admin@college.edu',
+    password: 'admin123',
+    department: 'CSE',
+    roles: ['admin'],
+    designation: 'Professor',
+    usn: 'ADM2024001',
+    createdAt: new Date().toISOString(),
+    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Admin',
   },
 ];
 
@@ -69,8 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     currentRole: null,
   });
 
-  /** Prefer principal > hod > faculty so HOD/Principal users see the correct dashboard. */
+  /** Prefer admin > principal > hod > faculty so users see the correct dashboard. */
   const getPrimaryRole = (roles: UserRole[]): UserRole => {
+    if (roles.includes('admin')) return 'admin';
     if (roles.includes('principal')) return 'principal';
     if (roles.includes('hod')) return 'hod';
     if (roles.includes('faculty')) return 'faculty';
@@ -142,12 +166,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (userData: RegisterData): Promise<{ success: boolean; error?: string }> => {
     const users = getUsers();
-    
+
     // Check if email already exists
     if (users.some((u) => u.email.toLowerCase() === userData.email.toLowerCase())) {
       return { success: false, error: 'Email already registered' };
     }
-    
+
     // Check if USN already exists
     if (users.some((u) => u.usn === userData.usn)) {
       return { success: false, error: 'USN already registered' };

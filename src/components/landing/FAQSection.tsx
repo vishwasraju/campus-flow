@@ -31,7 +31,7 @@ const faqs = [
 
 export function FAQSection() {
   return (
-    <section className="py-24 lg:py-32 bg-[#0a0a0a] relative overflow-hidden">
+    <section className="py-24 lg:py-32 bg-transparent relative overflow-hidden">
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -62,7 +62,7 @@ export function FAQSection() {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="border border-white/10 rounded-xl px-6 bg-white/[0.01] hover:bg-white/[0.02] transition-colors data-[state=open]:bg-white/[0.03]"
+                className="border border-white/10 rounded-xl px-6 bg-black/40 backdrop-blur-md hover:bg-white/[0.05] transition-colors data-[state=open]:bg-white/[0.1]"
               >
                 <AccordionTrigger className="text-white hover:no-underline py-6 text-left text-base font-medium">
                   {faq.question}
