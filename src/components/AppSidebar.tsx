@@ -24,6 +24,7 @@ import {
   CalendarDays,
   CheckSquare,
   BarChart3,
+  AlertTriangle,
   GraduationCap,
   User,
   LogOut,
