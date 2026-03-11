@@ -51,7 +51,7 @@ export function FAQSection() {
             >
               Frequently asked questions
             </h2>
-            <p className="text-white/50 text-base mt-6">
+            <p className="text-white/50 text-sm mt-6">
               Everything you need to know about CPS Portal and how we're changing faculty management.
             </p>
           </div>
