@@ -46,12 +46,12 @@ export function FAQSection() {
               [ FAQ ]
             </span>
             <h2
-              className="text-3xl md:text-4xl lg:text-5xl font-serif font-normal text-white leading-tight"
+              className="text-xl md:text-2xl lg:text-3xl font-serif font-normal text-white leading-tight"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
               Frequently asked questions
             </h2>
-            <p className="text-white/50 text-base mt-6">
+            <p className="text-white/50 text-sm mt-6">
               Everything you need to know about CPS Portal and how we're changing faculty management.
             </p>
           </div>
@@ -64,7 +64,7 @@ export function FAQSection() {
                 value={`item-${index}`}
                 className="border border-white/10 rounded-xl px-6 bg-black/40 backdrop-blur-md hover:bg-white/[0.05] transition-colors data-[state=open]:bg-white/[0.1]"
               >
-                <AccordionTrigger className="text-white hover:no-underline py-6 text-left text-base font-medium">
+                <AccordionTrigger className="text-white hover:no-underline py-6 text-left text-sm font-medium">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-white/50 pb-6 leading-relaxed">
