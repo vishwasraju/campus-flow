@@ -18,7 +18,7 @@ export function CTASection() {
           className="max-w-3xl mx-auto text-center"
         >
           <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-serif font-normal text-white mb-6 leading-tight"
+            className="text-2xl md:text-3xl lg:text-4xl font-serif font-normal text-white mb-6 leading-tight"
             style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
           >
             Academic Management Based on Proof of Work
