@@ -61,6 +61,7 @@ const App = () => (
                     <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
                     <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
                     <Route path="/tasks" element={<DashboardLayout><Tasks /></DashboardLayout>} />
+                    <Route path="/raise" element={<DashboardLayout><Raise /></DashboardLayout>} />
                     <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
                     <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
 
