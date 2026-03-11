@@ -24,6 +24,7 @@ import {
   CalendarDays,
   CheckSquare,
   BarChart3,
+  AlertTriangle,
   GraduationCap,
   User,
   LogOut,
@@ -70,6 +71,7 @@ const moduleNavItems: NavItem[] = [
   { title: 'Leave Management', url: '/leave', icon: Clock, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-teal-600 bg-teal-100' },
   { title: 'Timetable', url: '/timetable', icon: CalendarDays, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-indigo-600 bg-indigo-100' },
   { title: 'Tasks', url: '/tasks', icon: CheckSquare, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-rose-600 bg-rose-100' },
+  { title: 'Raise', url: '/raise', icon: AlertTriangle, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-amber-600 bg-amber-100' },
 ];
 
 const reportNavItems: NavItem[] = [
