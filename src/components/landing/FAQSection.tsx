@@ -46,7 +46,7 @@ export function FAQSection() {
               [ FAQ ]
             </span>
             <h2
-              className="text-3xl md:text-4xl lg:text-5xl font-serif font-normal text-white leading-tight"
+              className="text-xl md:text-2xl lg:text-3xl font-serif font-normal text-white leading-tight"
               style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}
             >
               Frequently asked questions
