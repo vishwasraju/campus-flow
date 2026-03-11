@@ -89,7 +89,7 @@ export function FeaturesSection() {
           >
             Solutions That Take Your Institution to the Next Level
           </h2>
-          <p className="text-base text-white/50 leading-relaxed tracking-wide">
+          <p className="text-sm text-white/50 leading-relaxed tracking-wide">
             We design, develop, and implement automation tools that help you work smarter, not harder
           </p>
         </motion.div>
