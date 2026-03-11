@@ -34,7 +34,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-sm md:text-base text-white/60 text-center max-w-2xl mx-auto mb-12 tracking-[0.1em] uppercase leading-relaxed"
+            className="text-xs md:text-sm text-white/60 text-center max-w-2xl mx-auto mb-12 tracking-[0.1em] uppercase leading-relaxed"
           >
             CPS Portal is a faculty management platform that simplifies academic
             processes for both faculty and administrators based on proof of performance.

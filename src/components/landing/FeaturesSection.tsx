@@ -111,8 +111,8 @@ export function FeaturesSection() {
               <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:bg-amber-400/10 group-hover:border-amber-400/30 transition-all duration-300">
                 <feature.icon className="w-5 h-5 text-white/60 group-hover:text-amber-400 transition-colors" />
               </div>
-              <h3 className="text-lg font-medium text-white mb-3 tracking-wide">{feature.title}</h3>
-              <p className="text-white/40 leading-relaxed text-sm">{feature.description}</p>
+              <h3 className="text-base font-medium text-white mb-3 tracking-wide">{feature.title}</h3>
+              <p className="text-white/40 leading-relaxed text-xs">{feature.description}</p>
             </motion.div>
           ))}
         </motion.div>

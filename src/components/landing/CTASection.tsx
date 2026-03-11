@@ -24,7 +24,7 @@ export function CTASection() {
             Academic Management Based on Proof of Work
           </h2>
 
-          <p className="text-base text-white/50 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm text-white/50 mb-10 max-w-2xl mx-auto leading-relaxed">
             Sign up to start tracking your academic contributions and get recognized by your institution. Join our community of forward-thinking faculty today!
           </p>
 
