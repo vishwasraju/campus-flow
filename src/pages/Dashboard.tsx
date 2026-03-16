@@ -166,14 +166,6 @@ const Dashboard = () => {
       {/* ═══════════ FACULTY ════════════════════════════════════ */}
       {currentRole === 'faculty' && (
         <>
-          {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard title="Total Credits" value={myTotalCredits.toFixed(2)} subtitle="Approved this year" icon={Award} iconBg="bg-blue-100" iconColor="text-blue-600" />
-            <StatCard title="Pending" value={myPending} subtitle="Awaiting review" icon={Clock} iconBg="bg-amber-100" iconColor="text-amber-600" />
-            <StatCard title="Approved Entries" value={myApproved.length} subtitle="This year" icon={CheckCircle2} iconBg="bg-green-100" iconColor="text-green-600" />
-            <StatCard title="Rejected" value={myRejected} subtitle="Not approved" icon={XCircle} iconBg="bg-red-100" iconColor="text-red-500" />
-          </div>
-
           <div className="grid gap-6 lg:grid-cols-4">
             {/* Left Sidebar: Profile Overview */}
             <div className="lg:col-span-1">
