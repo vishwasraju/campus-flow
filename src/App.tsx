@@ -27,6 +27,7 @@ import Reports from "./pages/Reports";
 import AdminPanel from "./pages/AdminPanel";
 import Tasks from "./pages/Tasks";
 import Raise from "./pages/Raise";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
