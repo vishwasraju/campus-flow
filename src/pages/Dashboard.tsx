@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
@@ -16,7 +16,7 @@ import {
 import {
   FileText, ClipboardCheck, Clock, TrendingUp, BookOpen, Briefcase,
   Users, FlaskConical, CheckCircle2, XCircle, Eye, Award, Building2,
-  GraduationCap, AlertCircle, ArrowRight, BarChart3, Mail, Shield, Calendar, Star,
+  GraduationCap, AlertCircle, ArrowRight, BarChart3, Mail, Shield, Calendar, Star, Pencil,
 } from 'lucide-react';
 import { ROLE_LABELS } from '@/types/auth';
 import {
@@ -77,6 +77,40 @@ const Dashboard = () => {
   const [viewingEntry, setViewingEntry] = useState<CPSEntry | null>(null);
   const [remarks, setRemarks] = useState('');
   const [actionType, setActionType] = useState<'approve' | 'reject' | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      // Update user avatar in localStorage
+      const USERS_KEY = 'cps_users';
+      const stored = localStorage.getItem(USERS_KEY);
+      if (stored) {
+        const users = JSON.parse(stored);
+        const idx = users.findIndex((u: any) => u.id === user.id);
+        if (idx !== -1) {
+          users[idx].avatarUrl = dataUrl;
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+      }
+      // Update auth state
+      const AUTH_KEY = 'cps_auth';
+      const authStored = localStorage.getItem(AUTH_KEY);
+      if (authStored) {
+        const auth = JSON.parse(authStored);
+        if (auth.user) {
+          auth.user.avatarUrl = dataUrl;
+          localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+        }
+      }
+      toast.success('Profile picture updated! Refresh to see changes.');
+      window.location.reload();
+    };
+    reader.readAsDataURL(file);
+  };
 
   /* ── faculty data ── */
   const myEntries = useMemo(
@@ -171,13 +205,25 @@ const Dashboard = () => {
             <div className="lg:col-span-1">
               <Card className="border-none shadow-md bg-gradient-to-b from-card to-background/50 h-full">
                 <CardContent className="pt-8 pb-6 flex flex-col items-center text-center">
-                  <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-lg mb-4">
-                    <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-                    <AvatarFallback className="text-2xl font-bold bg-primary/5 text-primary">
-                      {user?.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h2 className="text-xl font-bold">{user?.name}</h2>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                  />
+                  <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-lg">
+                      <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+                      <AvatarFallback className="text-2xl font-bold bg-primary/5 text-primary">
+                        {user?.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-md border-2 border-background group-hover:scale-110 transition-transform">
+                      <Pencil className="h-3.5 w-3.5 text-primary-foreground" />
+                    </div>
+                  </div>
+                  <h2 className="text-xl font-bold mt-4">{user?.name}</h2>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-1">{user?.department}</p>
 
                   <div className="w-full mt-6 space-y-3 text-left">
@@ -194,9 +240,6 @@ const Dashboard = () => {
                       <span>Joined {user?.createdAt ? format(new Date(user.createdAt), 'MMM yyyy') : 'N/A'}</span>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full mt-6 text-xs" onClick={() => navigate('/settings')}>
-                    Edit Profile
-                  </Button>
 
                   {/* Quick Actions inside profile card */}
                   <div className="w-full mt-5">

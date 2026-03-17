@@ -27,6 +27,7 @@ import Reports from "./pages/Reports";
 import AdminPanel from "./pages/AdminPanel";
 import Tasks from "./pages/Tasks";
 import Raise from "./pages/Raise";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
                     <Route path="/raise" element={<DashboardLayout><Raise /></DashboardLayout>} />
                     <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
                     <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
+                    <Route path="/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
 
                     {/* Landing page */}
                     <Route path="/" element={<LandingPage />} />
