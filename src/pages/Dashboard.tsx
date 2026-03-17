@@ -205,13 +205,25 @@ const Dashboard = () => {
             <div className="lg:col-span-1">
               <Card className="border-none shadow-md bg-gradient-to-b from-card to-background/50 h-full">
                 <CardContent className="pt-8 pb-6 flex flex-col items-center text-center">
-                  <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-lg mb-4">
-                    <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-                    <AvatarFallback className="text-2xl font-bold bg-primary/5 text-primary">
-                      {user?.name.split(' ').map(n => n[0]).join('')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h2 className="text-xl font-bold">{user?.name}</h2>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                  />
+                  <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-lg">
+                      <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+                      <AvatarFallback className="text-2xl font-bold bg-primary/5 text-primary">
+                        {user?.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-md border-2 border-background group-hover:scale-110 transition-transform">
+                      <Pencil className="h-3.5 w-3.5 text-primary-foreground" />
+                    </div>
+                  </div>
+                  <h2 className="text-xl font-bold mt-4">{user?.name}</h2>
                   <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-1">{user?.department}</p>
 
                   <div className="w-full mt-6 space-y-3 text-left">
