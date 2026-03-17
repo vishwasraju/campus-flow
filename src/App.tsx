@@ -9,6 +9,7 @@ import { CPSProvider } from "@/contexts/CPSContext";
 import { LeaveProvider } from "@/contexts/LeaveContext";
 import { TimetableProvider } from "@/contexts/TimetableContext";
 import { TaskProvider } from "@/contexts/TaskContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
@@ -38,6 +39,7 @@ const App = () => (
         <CPSProvider>
           <LeaveProvider>
             <TimetableProvider>
+            <NotificationProvider>
             <TaskProvider>
               <TooltipProvider>
                 <Toaster />
@@ -76,6 +78,7 @@ const App = () => (
                 </BrowserRouter>
               </TooltipProvider>
             </TaskProvider>
+            </NotificationProvider>
             </TimetableProvider>
           </LeaveProvider>
         </CPSProvider>
