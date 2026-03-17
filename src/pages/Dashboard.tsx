@@ -240,9 +240,6 @@ const Dashboard = () => {
                       <span>Joined {user?.createdAt ? format(new Date(user.createdAt), 'MMM yyyy') : 'N/A'}</span>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full mt-6 text-xs" onClick={() => navigate('/settings')}>
-                    Edit Profile
-                  </Button>
 
                   {/* Quick Actions inside profile card */}
                   <div className="w-full mt-5">
