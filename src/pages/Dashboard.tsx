@@ -77,6 +77,40 @@ const Dashboard = () => {
   const [viewingEntry, setViewingEntry] = useState<CPSEntry | null>(null);
   const [remarks, setRemarks] = useState('');
   const [actionType, setActionType] = useState<'approve' | 'reject' | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      // Update user avatar in localStorage
+      const USERS_KEY = 'cps_users';
+      const stored = localStorage.getItem(USERS_KEY);
+      if (stored) {
+        const users = JSON.parse(stored);
+        const idx = users.findIndex((u: any) => u.id === user.id);
+        if (idx !== -1) {
+          users[idx].avatarUrl = dataUrl;
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+      }
+      // Update auth state
+      const AUTH_KEY = 'cps_auth';
+      const authStored = localStorage.getItem(AUTH_KEY);
+      if (authStored) {
+        const auth = JSON.parse(authStored);
+        if (auth.user) {
+          auth.user.avatarUrl = dataUrl;
+          localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+        }
+      }
+      toast.success('Profile picture updated! Refresh to see changes.');
+      window.location.reload();
+    };
+    reader.readAsDataURL(file);
+  };
 
   /* ── faculty data ── */
   const myEntries = useMemo(
