@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
@@ -16,7 +16,7 @@ import {
 import {
   FileText, ClipboardCheck, Clock, TrendingUp, BookOpen, Briefcase,
   Users, FlaskConical, CheckCircle2, XCircle, Eye, Award, Building2,
-  GraduationCap, AlertCircle, ArrowRight, BarChart3, Mail, Shield, Calendar, Star,
+  GraduationCap, AlertCircle, ArrowRight, BarChart3, Mail, Shield, Calendar, Star, Pencil,
 } from 'lucide-react';
 import { ROLE_LABELS } from '@/types/auth';
 import {
