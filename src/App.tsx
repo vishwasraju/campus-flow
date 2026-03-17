@@ -9,6 +9,7 @@ import { CPSProvider } from "@/contexts/CPSContext";
 import { LeaveProvider } from "@/contexts/LeaveContext";
 import { TimetableProvider } from "@/contexts/TimetableContext";
 import { TaskProvider } from "@/contexts/TaskContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
