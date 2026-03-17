@@ -197,6 +197,25 @@ const Dashboard = () => {
                   <Button variant="outline" size="sm" className="w-full mt-6 text-xs" onClick={() => navigate('/settings')}>
                     Edit Profile
                   </Button>
+
+                  {/* Quick Actions inside profile card */}
+                  <div className="w-full mt-5">
+                    <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground mb-3">Quick Actions</p>
+                    <div className="flex flex-col gap-2">
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => navigate('/cps/new')}>
+                        <FileText className="w-3.5 h-3.5" /> New CPS Entry
+                      </Button>
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => navigate('/cps/records')}>
+                        <ClipboardCheck className="w-3.5 h-3.5" /> My CPS Records
+                      </Button>
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => navigate('/leave')}>
+                        <Clock className="w-3.5 h-3.5" /> Apply for Leave
+                      </Button>
+                      <Button variant="outline" size="sm" className="w-full justify-start gap-2 text-xs" onClick={() => navigate('/reports')}>
+                        <BarChart3 className="w-3.5 h-3.5" /> View Reports
+                      </Button>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -280,29 +299,7 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions (Moved below) */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Quick Actions</CardTitle>
-                  <CardDescription>Common tasks for your role</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-3">
-                    <Button variant="outline" className="gap-2" onClick={() => navigate('/cps/new')}>
-                      <FileText className="w-4 h-4" /> New CPS Entry
-                    </Button>
-                    <Button variant="outline" className="gap-2" onClick={() => navigate('/cps/records')}>
-                      <ClipboardCheck className="w-4 h-4" /> My CPS Records
-                    </Button>
-                    <Button variant="outline" className="gap-2" onClick={() => navigate('/leave')}>
-                      <Clock className="w-4 h-4" /> Apply for Leave
-                    </Button>
-                    <Button variant="outline" className="gap-2" onClick={() => navigate('/reports')}>
-                      <BarChart3 className="w-4 h-4" /> View Reports
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+
             </div>
           </div>
         </>

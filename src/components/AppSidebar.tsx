@@ -101,7 +101,7 @@ export function AppSidebar() {
         <SidebarMenuButton asChild isActive={isActive(item.url)}>
           <NavLink
             to={item.url}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors hover:bg-sidebar-accent"
+            className="flex items-center gap-3 px-3 py-1.5 rounded-lg transition-colors hover:bg-sidebar-accent"
             activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
           >
             <div className={`p-2 rounded-lg ${item.iconColor || 'text-muted-foreground bg-muted'}`}>
@@ -116,7 +116,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="border-r border-sidebar-border bg-sidebar">
-      <SidebarHeader className="p-4 border-b border-sidebar-border">
+      <SidebarHeader className="p-2 pt-3 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-xl">
             <GraduationCap className="w-5 h-5 text-primary-foreground" />
@@ -130,10 +130,10 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4">
+      <SidebarContent className="px-3 py-1 no-scrollbar">
         {/* Main Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <SidebarGroup className="px-0 py-1">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
             Main
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -143,8 +143,8 @@ export function AppSidebar() {
 
         {/* Approvals - Only for HOD/Principal */}
         {filterByRole(approvalNavItems).length > 0 && (
-          <SidebarGroup className="mt-6">
-            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+          <SidebarGroup className="mt-1 px-0 py-1">
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
               Approvals
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -154,8 +154,8 @@ export function AppSidebar() {
         )}
 
         {/* Modules */}
-        <SidebarGroup className="mt-6">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <SidebarGroup className="mt-1 px-0 py-1">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
             Modules
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -164,8 +164,8 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Reports */}
-        <SidebarGroup className="mt-6">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-3">
+        <SidebarGroup className="mt-1 px-0 py-1">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
             Analytics
           </SidebarGroupLabel>
           <SidebarGroupContent>
