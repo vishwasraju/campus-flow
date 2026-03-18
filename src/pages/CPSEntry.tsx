@@ -22,7 +22,8 @@ import {
   CheckCircle2,
   Upload,
   X,
-  Link2
+  Link2,
+  ClipboardList
 } from 'lucide-react';
 import { CPSCategory, CPS_ACTIVITIES, CPS_CATEGORY_LABELS, CPSActivityType } from '@/types/cps';
 import { toast } from 'sonner';
@@ -32,6 +33,7 @@ const categoryIcons: Record<CPSCategory, React.ComponentType<{ className?: strin
   academics: BookOpen,
   industry: Briefcase,
   placement: Users,
+  administration: ClipboardList,
 };
 
 const CPSEntry = () => {
@@ -72,32 +74,22 @@ const CPSEntry = () => {
 
   const shouldShowInvolvementOptions = isResearchInvolvementActivity || isPhDActivity || isJournalActivity || isConferenceActivity;
 
-  // Calculate past credits for Conference Organised
-  const pastConfOrganisedCredits = isConferenceOrganised && user ? entries
-    .filter(e =>
-      e.facultyId === user.id &&
-      e.activityType === 'National / International Conference Organised (Chairman / Secretary / Convener / Session Chair / Session Co-Chair)' &&
-      (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
-    )
-    .reduce((sum, e) => sum + e.credits, 0) : 0;
+  // Helper to calculate total approved/pending credits for a specific activity type
+  const getAccumulatedCreditsForActivity = (activityName: string) => {
+    if (!user) return 0;
+    return entries
+      .filter(e =>
+        e.facultyId === user.id &&
+        e.activityType === activityName &&
+        (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
+      )
+      .reduce((sum, e) => sum + e.credits, 0);
+  };
 
-  // Calculate past credits for Journal
-  const pastJournalCredits = isJournalActivity && user ? entries
-    .filter(e =>
-      e.facultyId === user.id &&
-      e.activityType === 'Journal / Book Chapter (SCI / Scopus)' &&
-      (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
-    )
-    .reduce((sum, e) => sum + e.credits, 0) : 0;
-
-  // Calculate past credits for Conference Paper
-  const pastConfPaperCredits = isConferenceActivity && user ? entries
-    .filter(e =>
-      e.facultyId === user.id &&
-      e.activityType === 'Conference Paper (SCI / Scopus / WoS / Intl.)' &&
-      (e.status === 'approved' || e.status === 'pending_hod' || e.status === 'pending_principal')
-    )
-    .reduce((sum, e) => sum + e.credits, 0) : 0;
+  // Specific helpers for the complex research limits (that also depend on maxCredits or other rules)
+  const pastConfOrganisedCredits = getAccumulatedCreditsForActivity('National / International Conference Organised (Chairman / Secretary / Convener / Session Chair / Session Co-Chair)');
+  const pastJournalCredits = getAccumulatedCreditsForActivity('Journal / Book Chapter (SCI / Scopus)');
+  const pastConfPaperCredits = getAccumulatedCreditsForActivity('Conference Paper (SCI / Scopus / WoS / Intl.)');
 
   const getRoleLabels = () => {
     if (isPhDActivity) {
@@ -147,14 +139,16 @@ const CPSEntry = () => {
     if (activeCategory !== 'research') return activity.credits;
 
     if (isConferenceOrganised) {
-      // Max 3 points cumulative
-      const remainingCap = Math.max(0, 3 - pastConfOrganisedCredits);
+      // Max 3 points cumulative (as defined in type)
+      const maxPossible = activity.maxCredits || 3;
+      const remainingCap = Math.max(0, maxPossible - pastConfOrganisedCredits);
       return Math.min(activity.credits, remainingCap);
     }
 
     if (isConsultancy) {
       const amount = Number(consultancyAmount) || 0;
-      return Math.min(amount, 10);
+      const maxPossible = activity.maxCredits || 10;
+      return Math.min(amount, maxPossible);
     }
 
     // Common logic for capping Journal and Conf Paper
@@ -195,11 +189,18 @@ const CPSEntry = () => {
 
     // Apply Cumulative Limits
     if (isJournalActivity) {
-      const remainingCap = Math.max(0, 10 - pastJournalCredits);
+      const remainingCap = Math.max(0, (activity.maxCredits || 10) - pastJournalCredits);
       return Math.min(calculated, remainingCap);
     }
     if (isConferenceActivity) {
-      const remainingCap = Math.max(0, 10 - pastConfPaperCredits);
+      const remainingCap = Math.max(0, (activity.maxCredits || 10) - pastConfPaperCredits);
+      return Math.min(calculated, remainingCap);
+    }
+
+    // Apply generic maxCredits limits for everything else
+    if (activity.maxCredits) {
+      const pastGenericCredits = getAccumulatedCreditsForActivity(activity.name);
+      const remainingCap = Math.max(0, activity.maxCredits - pastGenericCredits);
       return Math.min(calculated, remainingCap);
     }
 
@@ -326,10 +327,25 @@ Consultancy Amount: ₹${amount} Lakhs
   const calculatedCredits = selectedActivityDetails ? calculateCredits(selectedActivityDetails) : 0;
 
   // Display value for Credits Preview
-  // For Conf Organised: Show "Cumulative / Max"
-  const confOrganisedDisplay = isConferenceOrganised ? `${Math.min(pastConfOrganisedCredits + calculatedCredits, 3)}/3` : null;
-  const journalDisplay = isJournalActivity ? `${Math.min(pastJournalCredits + calculatedCredits, 10)}/10` : null;
-  const confPaperDisplay = isConferenceActivity ? `${Math.min(pastConfPaperCredits + calculatedCredits, 10)}/10` : null;
+  let previewDisplay: React.ReactNode = calculatedCredits;
+  
+  if (selectedActivityDetails?.maxCredits) {
+    const pastCredits = getAccumulatedCreditsForActivity(selectedActivityDetails.name);
+    // The user will receive exactly `calculatedCredits` for this entry, but we show the overall progress
+    const nextTotal = Math.min(pastCredits + calculatedCredits, selectedActivityDetails.maxCredits);
+    previewDisplay = (
+      <div className="flex items-baseline justify-center gap-1">
+        <span>{nextTotal}</span>
+        <span className="text-xl text-muted-foreground">/ {selectedActivityDetails.maxCredits}</span>
+      </div>
+    );
+  } else if (isConferenceOrganised) {
+    previewDisplay = `${Math.min(pastConfOrganisedCredits + calculatedCredits, 3)}/3`;
+  } else if (isJournalActivity) {
+    previewDisplay = `${Math.min(pastJournalCredits + calculatedCredits, 10)}/10`;
+  } else if (isConferenceActivity) {
+    previewDisplay = `${Math.min(pastConfPaperCredits + calculatedCredits, 10)}/10`;
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -376,16 +392,29 @@ Consultancy Amount: ₹${amount} Lakhs
                             <SelectValue placeholder="Select an activity type" />
                           </SelectTrigger>
                           <SelectContent>
-                            {getActivitiesByCategory(category).map((activity) => (
-                              <SelectItem key={activity.id} value={activity.id}>
-                                <div className="flex items-center justify-between gap-4">
-                                  <span>{activity.name}</span>
-                                  <Badge variant="secondary" className="ml-2">
-                                    {activity.credits} pts
-                                  </Badge>
-                                </div>
-                              </SelectItem>
-                            ))}
+                            {getActivitiesByCategory(category).map((activity) => {
+                              const pastCredits = getAccumulatedCreditsForActivity(activity.name);
+                              const isMaxedOut = activity.maxCredits ? pastCredits >= activity.maxCredits : false;
+                              
+                              return (
+                                <SelectItem 
+                                  key={activity.id} 
+                                  value={activity.id}
+                                  disabled={isMaxedOut}
+                                  className={isMaxedOut ? "opacity-50" : ""}
+                                >
+                                  <div className="flex items-center justify-between gap-4 w-full pr-2">
+                                    <span className={isMaxedOut ? "line-through text-muted-foreground" : ""}>
+                                      {activity.name}
+                                    </span>
+                                    <Badge variant={isMaxedOut ? "outline" : "secondary"} className="ml-2 whitespace-nowrap">
+                                      {isMaxedOut ? 'Maxed Out' : 
+                                        activity.maxCredits ? `${activity.credits} pts (Max ${activity.maxCredits})` : `${activity.credits} pts`}
+                                    </Badge>
+                                  </div>
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
                       </div>
@@ -599,14 +628,10 @@ Consultancy Amount: ₹${amount} Lakhs
                 <div className="space-y-4">
                   <div className="p-4 rounded-lg bg-accent">
                     <div className="text-3xl font-bold text-center">
-                      {isConsultancy ? `${calculatedCredits}/10` :
-                        isConferenceOrganised ? confOrganisedDisplay :
-                          isJournalActivity ? journalDisplay :
-                            isConferenceActivity ? confPaperDisplay :
-                              calculatedCredits}
+                      {isConsultancy && !selectedActivityDetails?.maxCredits ? `${calculatedCredits}/10` : previewDisplay}
                     </div>
                     <div className="text-sm text-center text-muted-foreground">
-                      {(isConsultancy || isJournalActivity || isConferenceActivity || isConferenceOrganised) ? 'Calculated Points (Max Cap)' : 'Calculated Points'}
+                      {(isConsultancy || isJournalActivity || isConferenceActivity || isConferenceOrganised || selectedActivityDetails?.maxCredits) ? 'Total Points Progress' : 'Calculated Points'}
                     </div>
                   </div>
                   <div className="space-y-2">

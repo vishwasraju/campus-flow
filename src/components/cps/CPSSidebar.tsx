@@ -44,6 +44,7 @@ const CPSSidebar = ({ activeFilter, onFilterChange, counts }: CPSSidebarProps) =
     { id: 'academics', label: 'Academics', color: 'bg-cyan-500' },
     { id: 'industry', label: 'Industry', color: 'bg-orange-500' },
     { id: 'placement', label: 'Placement', color: 'bg-green-500' },
+    { id: 'administration', label: 'Administration', color: 'bg-indigo-500' },
   ];
 
   return (
