@@ -366,7 +366,7 @@ Consultancy Amount: ₹${amount} Lakhs
             </CardHeader>
             <CardContent>
               <Tabs value={activeCategory} onValueChange={handleCategoryChange}>
-                <TabsList className="grid grid-cols-4 h-auto">
+                <TabsList className="grid grid-cols-2 lg:grid-cols-5 h-auto">
                   {(Object.keys(CPS_CATEGORY_LABELS) as CPSCategory[]).map((category) => {
                     const Icon = categoryIcons[category];
                     return (
