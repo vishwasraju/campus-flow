@@ -24,7 +24,11 @@ const Login = () => {
     try {
       const success = await login(email, password);
       if (success) {
-        navigate('/dashboard');
+        if (email.toLowerCase() === 'admin@college.edu') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
         setError('Invalid email or password. Please try again.');
       }
@@ -42,7 +46,11 @@ const Login = () => {
 
     const success = await login(userEmail, userPassword);
     if (success) {
-      navigate('/dashboard');
+      if (userEmail.toLowerCase() === 'admin@college.edu') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
     }
     setIsLoading(false);
   };

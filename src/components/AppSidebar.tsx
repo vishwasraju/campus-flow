@@ -55,7 +55,7 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal', 'admin'], iconColor: 'text-blue-600 bg-blue-100' },
+  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-blue-600 bg-blue-100' },
   { title: 'Admin Panel', url: '/admin', icon: Shield, roles: ['admin'], iconColor: 'text-red-600 bg-red-100' },
   { title: 'CPS Entry', url: '/cps/new', icon: FileText, roles: ['faculty', 'hod'], iconColor: 'text-green-600 bg-green-100' },
   { title: 'My CPS Records', url: '/cps/records', icon: ClipboardCheck, roles: ['faculty', 'hod'], iconColor: 'text-purple-600 bg-purple-100' },
@@ -154,24 +154,28 @@ export function AppSidebar() {
         )}
 
         {/* Modules */}
-        <SidebarGroup className="mt-1 px-0 py-1">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
-            Modules
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">{renderNavItems(moduleNavItems)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filterByRole(moduleNavItems).length > 0 && (
+          <SidebarGroup className="mt-1 px-0 py-1">
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
+              Modules
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="space-y-1">{renderNavItems(moduleNavItems)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* Reports */}
-        <SidebarGroup className="mt-1 px-0 py-1">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
-            Analytics
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">{renderNavItems(reportNavItems)}</SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filterByRole(reportNavItems).length > 0 && (
+          <SidebarGroup className="mt-1 px-0 py-1">
+            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-0 px-3">
+              Analytics
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="space-y-1">{renderNavItems(reportNavItems)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter className="p-4 border-t border-sidebar-border">

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCPS } from '@/contexts/CPSContext';
@@ -42,6 +42,7 @@ const categoryMeta: Record<CPSCategory, { label: string; color: string; bg: stri
   academics: { label: 'Academics', color: 'text-cyan-600', bg: 'bg-cyan-100', bar: 'bg-cyan-500', icon: BookOpen },
   industry: { label: 'Industry', color: 'text-orange-600', bg: 'bg-orange-100', bar: 'bg-orange-500', icon: Briefcase },
   placement: { label: 'Placement', color: 'text-green-600', bg: 'bg-green-100', bar: 'bg-green-500', icon: Users },
+  administration: { label: 'Administration', color: 'text-blue-600', bg: 'bg-blue-100', bar: 'bg-blue-500', icon: Building2 },
 };
 
 /* ── stat card ──────────────────────────────────────────────── */
@@ -72,6 +73,12 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { user, currentRole } = useAuth();
   const { entries, getPendingHODApprovals, getPendingPrincipalApprovals, updateEntry } = useCPS();
+
+  useEffect(() => {
+    if (currentRole === 'admin') {
+      navigate('/admin', { replace: true });
+    }
+  }, [currentRole, navigate]);
 
   const [selectedEntry, setSelectedEntry] = useState<CPSEntry | null>(null);
   const [viewingEntry, setViewingEntry] = useState<CPSEntry | null>(null);

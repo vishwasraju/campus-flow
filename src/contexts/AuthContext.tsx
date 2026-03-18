@@ -5,6 +5,9 @@ interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   register: (userData: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  getAdminUsers: () => (User & { password?: string })[];
+  updateUser: (id: string, updates: Partial<User>) => void;
+  deleteUser: (id: string) => void;
 }
 
 interface RegisterData {
@@ -212,6 +215,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true };
   };
 
+  const getAdminUsers = (): (User & { password?: string })[] => {
+    return getUsers();
+  };
+
+  const updateUser = (id: string, updates: Partial<User>) => {
+    const users = getUsers();
+    const index = users.findIndex(u => u.id === id);
+    if (index !== -1) {
+      users[index] = { ...users[index], ...updates };
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+      
+      // Update current user state if they are editing themselves
+      if (authState.user?.id === id) {
+        const { password: _, ...updatedUser } = users[index];
+        setAuthState(prev => ({
+          ...prev,
+          user: updatedUser,
+          currentRole: getPrimaryRole(updatedUser.roles)
+        }));
+      }
+    }
+  };
+
+  const deleteUser = (id: string) => {
+    const users = getUsers();
+    const newUsers = users.filter(u => u.id !== id);
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
+    
+    // If admin deletes themselves (edge case), log them out
+    if (authState.user?.id === id) {
+      logout();
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -219,6 +256,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         register,
+        getAdminUsers,
+        updateUser,
+        deleteUser,
       }}
     >
       {children}

@@ -11,6 +11,7 @@ interface CPSContextType {
   getEntriesByDepartment: (department: string) => CPSEntry[];
   getPendingHODApprovals: (department: string) => CPSEntry[];
   getPendingPrincipalApprovals: () => CPSEntry[];
+  deleteEntriesByFaculty: (facultyId: string) => void;
 }
 
 const CPSContext = createContext<CPSContextType | undefined>(undefined);
@@ -108,6 +109,10 @@ export function CPSProvider({ children }: { children: ReactNode }) {
     setEntries((prev) => prev.filter((entry) => entry.id !== id));
   };
 
+  const deleteEntriesByFaculty = (facultyId: string) => {
+    setEntries((prev) => prev.filter((entry) => entry.facultyId !== facultyId));
+  };
+
   const getEntriesByFaculty = (facultyId: string): CPSEntry[] => {
     return entries.filter((e) => e.facultyId === facultyId);
   };
@@ -142,6 +147,7 @@ export function CPSProvider({ children }: { children: ReactNode }) {
         getEntriesByDepartment,
         getPendingHODApprovals,
         getPendingPrincipalApprovals,
+        deleteEntriesByFaculty,
       }}
     >
       {children}
