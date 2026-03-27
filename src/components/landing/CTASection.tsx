@@ -34,16 +34,13 @@ export function CTASection() {
               variant="outline"
               className="border-white/30 bg-transparent text-white hover:bg-white hover:text-black font-medium px-8 py-6 text-sm rounded-full tracking-wider transition-all duration-300"
             >
-              <Link to="/signup" className="flex items-center gap-3">
-                GET STARTED FREE
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+
             </Button>
             <Button
               asChild
               className="bg-white/10 border border-white/20 text-white hover:bg-white hover:text-black font-medium px-8 py-6 text-sm rounded-full tracking-wider transition-all duration-300"
             >
-              <Link to="/login">SCHEDULE A DEMO</Link>
+              <Link to="/login">BOOK A CALL</Link>
             </Button>
           </div>
         </motion.div>

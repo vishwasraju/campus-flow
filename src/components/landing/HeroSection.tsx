@@ -49,16 +49,6 @@ export function HeroSection() {
           >
             <Button
               asChild
-              variant="outline"
-              className="border-white/30 bg-transparent text-white hover:bg-white hover:text-black font-medium px-8 py-6 text-sm rounded-full tracking-wider transition-all duration-300 pointer-events-auto"
-            >
-              <Link to="/signup" className="flex items-center gap-3">
-                START TRACKING NOW
-                <span className="w-6 h-6 rounded bg-white/20 flex items-center justify-center text-xs">S</span>
-              </Link>
-            </Button>
-            <Button
-              asChild
               className="bg-white/10 border border-white/20 text-white hover:bg-white hover:text-black font-medium px-8 py-6 text-sm rounded-full tracking-wider transition-all duration-300 pointer-events-auto"
             >
               <Link to="/login" className="flex items-center gap-3">

@@ -29,6 +29,7 @@ import AdminPanel from "./pages/AdminPanel";
 import Tasks from "./pages/Tasks";
 import Raise from "./pages/Raise";
 import Settings from "./pages/Settings";
+import BookCall from "./pages/BookCall";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
                     <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
                     <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
                     <Route path="/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
+                    <Route path="/book-call" element={<BookCall />} />
 
                     {/* Landing page */}
                     <Route path="/" element={<LandingPage />} />

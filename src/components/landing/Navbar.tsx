@@ -69,10 +69,7 @@ export function Navbar() {
             <div className="hidden md:flex items-center gap-8">
               {/* Company Dropdown */}
               <div className="relative group">
-                <button className="flex items-center gap-1 text-white/70 hover:text-white transition-colors text-[11px] font-medium uppercase tracking-widest">
-                  COMPANY
-                  <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
-                </button>
+
 
                 {/* Dropdown Content */}
                 <div className="absolute right-0 top-full pt-4 w-[220px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
@@ -109,7 +106,7 @@ export function Navbar() {
                   variant="outline"
                   className="bg-zinc-900/50 border-white/10 text-white hover:bg-white/5 hover:border-white/20 h-8 px-4 text-[10px] font-medium tracking-widest uppercase rounded-md"
                 >
-                  <Link to="/login">BOOK A CALL</Link>
+                  <Link to="/book-call">BOOK A CALL</Link>
                 </Button>
                 <Button
                   asChild
@@ -158,7 +155,7 @@ export function Navbar() {
                       variant="outline"
                       className="w-full justify-center border-white/20 bg-transparent text-white hover:bg-white/5 h-9 text-xs tracking-wider uppercase"
                     >
-                      <Link to="/login">BOOK A CALL</Link>
+                      <Link to="/book-call">BOOK A CALL</Link>
                     </Button>
                     <Button
                       asChild
