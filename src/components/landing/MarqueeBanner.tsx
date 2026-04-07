@@ -24,9 +24,9 @@ export function MarqueeBanner() {
           <div key={setIndex} className="flex items-center">
             {marqueeItems.map((item, index) => (
               <div key={`${setIndex}-${index}`} className="flex items-center mx-8">
-                <span className="text-white/60 mr-2 text-xs">{item.icon}</span>
+                <span className="text-white/60 mr-2 text-[10px]">{item.icon}</span>
                 <span
-                  className={`text-[11px] tracking-[0.2em] font-medium ${
+                  className={`text-[9px] tracking-[0.2em] font-medium ${
                     item.highlight
                       ? 'text-white bg-white/10 px-2 py-0.5 rounded'
                       : 'text-white/60'

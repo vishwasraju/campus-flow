@@ -120,10 +120,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Initialize demo users if not present
+    // Initialize demo users if not present, and ensure admin exists
     const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
     if (!storedUsers) {
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(DEMO_USERS));
+    } else {
+      try {
+        const parsedUsers = JSON.parse(storedUsers);
+        // Ensure admin user is in the storage
+        if (!parsedUsers.some((u: User) => u.email === 'admin@college.edu')) {
+          const adminUser = DEMO_USERS.find(u => u.email === 'admin@college.edu');
+          if (adminUser) {
+            parsedUsers.push(adminUser);
+            localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(parsedUsers));
+          }
+        }
+      } catch (e) {
+        console.error('Failed to parse users:', e);
+      }
     }
   }, []);
 

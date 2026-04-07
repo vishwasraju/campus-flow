@@ -26,10 +26,10 @@ import NotFound from "./pages/NotFound";
 import Circulars from "./pages/Circulars";
 import Reports from "./pages/Reports";
 import AdminPanel from "./pages/AdminPanel";
+import BookCall from "./pages/BookCall";
 import Tasks from "./pages/Tasks";
 import Raise from "./pages/Raise";
 import Settings from "./pages/Settings";
-import BookCall from "./pages/BookCall";
 
 const queryClient = new QueryClient();
 
@@ -40,47 +40,47 @@ const App = () => (
         <CPSProvider>
           <LeaveProvider>
             <TimetableProvider>
-            <NotificationProvider>
-            <TaskProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <Routes>
-                    {/* Public Routes */}
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
+              <NotificationProvider>
+                <TaskProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <Routes>
+                        {/* Public Routes */}
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<Signup />} />
 
-                    {/* Protected Routes - wrapped in DashboardLayout */}
-                    <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-                    <Route path="/cps/new" element={<DashboardLayout><CPSEntry /></DashboardLayout>} />
-                    <Route path="/cps/records" element={<DashboardLayout><CPSRecords /></DashboardLayout>} />
-                    <Route path="/approvals/hod" element={<DashboardLayout><HODApprovals /></DashboardLayout>} />
-                    <Route path="/approvals/principal" element={<DashboardLayout><PrincipalApprovals /></DashboardLayout>} />
+                        {/* Protected Routes - wrapped in DashboardLayout */}
+                        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+                        <Route path="/cps/new" element={<DashboardLayout><CPSEntry /></DashboardLayout>} />
+                        <Route path="/cps/records" element={<DashboardLayout><CPSRecords /></DashboardLayout>} />
+                        <Route path="/approvals/hod" element={<DashboardLayout><HODApprovals /></DashboardLayout>} />
+                        <Route path="/approvals/principal" element={<DashboardLayout><PrincipalApprovals /></DashboardLayout>} />
 
-                    {/* Placeholder routes for other modules */}
-                    {/* Circulars Route */}
-                    <Route path="/circulars" element={<DashboardLayout><Circulars /></DashboardLayout>} />
-                    <Route path="/events" element={<DashboardLayout><Events /></DashboardLayout>} />
-                    <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
-                    <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
-                    <Route path="/tasks" element={<DashboardLayout><Tasks /></DashboardLayout>} />
-                    <Route path="/raise" element={<DashboardLayout><Raise /></DashboardLayout>} />
-                    <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
-                    <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
-                    <Route path="/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
-                    <Route path="/book-call" element={<BookCall />} />
+                        {/* Placeholder routes for other modules */}
+                        {/* Circulars Route */}
+                        <Route path="/circulars" element={<DashboardLayout><Circulars /></DashboardLayout>} />
+                        <Route path="/events" element={<DashboardLayout><Events /></DashboardLayout>} />
+                        <Route path="/leave" element={<DashboardLayout><Leave /></DashboardLayout>} />
+                        <Route path="/timetable" element={<DashboardLayout><Timetable /></DashboardLayout>} />
+                        <Route path="/tasks" element={<DashboardLayout><Tasks /></DashboardLayout>} />
+                        <Route path="/raise" element={<DashboardLayout><Raise /></DashboardLayout>} />
+                        <Route path="/reports" element={<DashboardLayout><Reports /></DashboardLayout>} />
+                        <Route path="/admin" element={<DashboardLayout><AdminPanel /></DashboardLayout>} />
+                        <Route path="/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
 
-                    {/* Landing page */}
-                    <Route path="/" element={<LandingPage />} />
+                        {/* Landing page */}
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/book-call" element={<BookCall />} />
 
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
-              </TooltipProvider>
-            </TaskProvider>
-            </NotificationProvider>
+                        {/* 404 */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </TaskProvider>
+              </NotificationProvider>
             </TimetableProvider>
           </LeaveProvider>
         </CPSProvider>
