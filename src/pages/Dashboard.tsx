@@ -25,7 +25,6 @@ import {
 } from '@/types/cps';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import CpsScoreWidget from '@/components/cps/CpsScoreWidget';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 /* ── helpers ────────────────────────────────────────────────── */
@@ -200,7 +199,6 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-4">
           <Badge variant="outline" className="py-1.5 px-3">Academic Year 2024-25</Badge>
-          <CpsScoreWidget />
         </div>
       </div>
 
