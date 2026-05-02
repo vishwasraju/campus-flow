@@ -41,8 +41,13 @@ const Signup = () => {
     setError('');
 
     // Validation
-    if (!formData.name || !formData.email || !formData.usn || !formData.department || !formData.post || !formData.designation || !formData.password) {
+    if (!formData.name || !formData.email || !formData.usn || !formData.department || !formData.post || !formData.password) {
       setError('All fields are required');
+      return;
+    }
+    // Designation is only required for academic staff
+    if (formData.post !== 'Non-Teaching Staff' && !formData.designation) {
+      setError('Please select a designation');
       return;
     }
 
@@ -65,7 +70,7 @@ const Signup = () => {
         usn: formData.usn,
         department: formData.department as Department,
         post: formData.post as Post,
-        designation: formData.designation as Designation,
+        designation: (formData.post === 'Non-Teaching Staff' ? 'None' : formData.designation) as Designation,
         password: formData.password,
       });
 
@@ -197,6 +202,7 @@ const Signup = () => {
                 </div>
               </div>
 
+              {formData.post !== 'Non-Teaching Staff' && (
               <div className="space-y-2">
                 <Label htmlFor="designation">Designation</Label>
                 <Select
@@ -215,6 +221,7 @@ const Signup = () => {
                   </SelectContent>
                 </Select>
               </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>

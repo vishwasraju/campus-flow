@@ -21,7 +21,7 @@ const DEMO_LEAVES: LeaveEntry[] = [
     applicantId: '1',
     applicantName: 'Dr. Rajesh Kumar',
     department: 'CSE',
-    leaveType: 'sick',
+    leaveType: 'eol_medical',
     startDate: '2024-03-01',
     endDate: '2024-03-02',
     reason: 'Medical appointment',
@@ -61,9 +61,7 @@ export function LeaveProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (entries.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   }, [entries]);
 
   const addLeave = (entry: Omit<LeaveEntry, 'id'>) => {

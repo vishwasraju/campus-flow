@@ -100,6 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (roles.includes('admin')) return 'admin';
     if (roles.includes('principal')) return 'principal';
     if (roles.includes('hod')) return 'hod';
+    if (roles.includes('non_teaching')) return 'non_teaching';
     if (roles.includes('faculty')) return 'faculty';
     return roles[0];
   };
@@ -200,6 +201,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       roles = ['faculty', 'hod'];
     } else if (userData.post === 'Principal') {
       roles = ['principal'];
+    } else if (userData.post === 'Non-Teaching Staff') {
+      roles = ['non_teaching'];
     }
 
     const newUser: User & { password: string } = {

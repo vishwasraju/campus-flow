@@ -48,9 +48,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (assignments.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(assignments));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(assignments));
   }, [assignments]);
 
   const addAssignment = (assignment: Omit<AdminTaskAssignment, 'id'>) => {

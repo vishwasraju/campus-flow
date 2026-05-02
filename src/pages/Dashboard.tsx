@@ -133,7 +133,7 @@ const Dashboard = () => {
 
   // Category breakdown
   const categoryCredits = useMemo(() => {
-    const map: Record<string, number> = { research: 0, academics: 0, industry: 0, placement: 0 };
+    const map: Record<string, number> = { research: 0, academics: 0, industry: 0, placement: 0, administration: 0 };
     myApproved.forEach(e => { map[e.category] = (map[e.category] || 0) + e.credits; });
     return map;
   }, [myApproved]);
@@ -294,6 +294,35 @@ const Dashboard = () => {
                     {eligibilityPct >= 100
                       ? <Badge className="bg-green-100 text-green-700">✓ Eligible</Badge>
                       : <span>{(ELIGIBILITY_TARGET - myTotalCredits).toFixed(2)} pts remaining</span>}
+                  </div>
+
+                  {/* Category Progress Bars */}
+                  <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-primary/5 mt-2">
+                    {(['research', 'academics', 'industry', 'placement'] as CPSCategory[]).map(cat => {
+                      const meta = categoryMeta[cat];
+                      const Icon = meta.icon;
+                      const val = categoryCredits[cat] || 0;
+                      // For visualization, assume a target of 25 for each of these 4 categories to reach 100
+                      const pct = Math.min(100, Math.round((val / 25) * 100));
+                      
+                      return (
+                        <div key={cat} className="space-y-1.5">
+                          <div className="flex items-center justify-between text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                            <div className="flex items-center gap-1.5">
+                              <Icon className={`w-3 h-3 ${meta.color}`} />
+                              <span className="truncate max-w-[50px]">{meta.label.split(' ')[0]}</span>
+                            </div>
+                            <span className="text-foreground">{val.toFixed(1)}</span>
+                          </div>
+                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full rounded-full ${meta.bar} transition-all duration-1000`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -632,6 +661,73 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </>
+      )}
+
+      {/* ═══════════ NON-TEACHING STAFF ════════════════════════ */}
+      {currentRole === 'non_teaching' && (
+        <>
+          <div className="grid gap-6 lg:grid-cols-4">
+            {/* Profile Overview (Non-Teaching) */}
+            <Card className="lg:col-span-1 border-none shadow-md bg-gradient-to-b from-card to-background/50 h-full">
+              <CardContent className="pt-8 pb-6 flex flex-col items-center text-center">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                />
+                <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                  <Avatar className="h-24 w-24 border-4 border-primary/10 shadow-lg">
+                    <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+                    <AvatarFallback className="text-2xl font-bold bg-primary/5 text-primary">
+                      {user?.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute bottom-0 right-0 h-8 w-8 rounded-full bg-primary flex items-center justify-center shadow-md border-2 border-background group-hover:scale-110 transition-transform">
+                    <Pencil className="h-3.5 w-3.5 text-primary-foreground" />
+                  </div>
+                </div>
+                <h2 className="text-xl font-bold mt-4">{user?.name}</h2>
+                <Badge variant="secondary" className="mt-1">{ROLE_LABELS['non_teaching']}</Badge>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-2">{user?.department}</p>
+
+                <div className="w-full mt-6 space-y-3 text-left">
+                  <div className="flex items-center gap-2 text-xs">
+                    <Mail className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="truncate">{user?.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Shield className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span>{user?.usn}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Main Action Area */}
+            <div className="lg:col-span-3 space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <Clock className="w-6 h-6 text-primary" /> Leave Management
+                  </CardTitle>
+                  <CardDescription>
+                    Apply for leave and view your leave history
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-6 text-sm">
+                    Access the leave management portal to check your leave balances, apply for various types of leaves including Casual Leave, Earned Leave, and Maternity/Paternity Leave.
+                  </p>
+                  <Button size="lg" className="gap-2" onClick={() => navigate('/leave')}>
+                    <Clock className="w-5 h-5" /> Go to Leave Management
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </>
       )}
 

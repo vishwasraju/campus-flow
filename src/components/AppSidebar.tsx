@@ -55,20 +55,21 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-blue-600 bg-blue-100' },
+  { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard, roles: ['faculty', 'hod', 'principal', 'non_teaching'], iconColor: 'text-blue-600 bg-blue-100' },
   { title: 'Admin Panel', url: '/admin', icon: Shield, roles: ['admin'], iconColor: 'text-red-600 bg-red-100' },
   { title: 'CPS Entry', url: '/cps/new', icon: FileText, roles: ['faculty', 'hod'], iconColor: 'text-green-600 bg-green-100' },
   { title: 'My CPS Records', url: '/cps/records', icon: ClipboardCheck, roles: ['faculty', 'hod'], iconColor: 'text-purple-600 bg-purple-100' },
 ];
 
 const approvalNavItems: NavItem[] = [
+  { title: 'HOD Approvals', url: '/approvals/hod', icon: ClipboardCheck, roles: ['hod'], iconColor: 'text-amber-600 bg-amber-100' },
   { title: 'Principal Approvals', url: '/approvals/principal', icon: ClipboardCheck, roles: ['principal'], iconColor: 'text-cyan-600 bg-cyan-100' },
 ];
 
 const moduleNavItems: NavItem[] = [
   { title: 'Circulars', url: '/circulars', icon: Megaphone, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-orange-600 bg-orange-100' },
   { title: 'Events', url: '/events', icon: Calendar, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-pink-600 bg-pink-100' },
-  { title: 'Leave Management', url: '/leave', icon: Clock, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-teal-600 bg-teal-100' },
+  { title: 'Leave Management', url: '/leave', icon: Clock, roles: ['faculty', 'hod', 'principal', 'non_teaching'], iconColor: 'text-teal-600 bg-teal-100' },
   { title: 'Timetable', url: '/timetable', icon: CalendarDays, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-indigo-600 bg-indigo-100' },
   { title: 'Tasks', url: '/tasks', icon: CheckSquare, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-rose-600 bg-rose-100' },
   { title: 'Raise', url: '/raise', icon: AlertTriangle, roles: ['faculty', 'hod', 'principal'], iconColor: 'text-amber-600 bg-amber-100' },

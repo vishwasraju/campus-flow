@@ -6,13 +6,17 @@ export type LeaveStatus =
 
 export type LeaveType =
   | 'casual'
-  | 'sick'
+  | 'special_casual'
   | 'earned'
   | 'maternity'
   | 'paternity'
-  | 'compensatory'
-  | 'leave_without_pay'
-  | 'other';
+  | 'extra_ordinary'
+  | 'fixed_term_contract'
+  | 'temporary'
+  | 'post_retirement'
+  | 'restricted_holiday'
+  | 'ood'
+  | 'eol_medical';
 
 export interface LeaveEntry {
   id: string;
@@ -35,13 +39,17 @@ export interface LeaveEntry {
 
 export const LEAVE_TYPE_LABELS: Record<LeaveType, string> = {
   casual: 'Casual Leave',
-  sick: 'Sick Leave',
+  special_casual: 'Special Casual Leave',
   earned: 'Earned Leave',
   maternity: 'Maternity Leave',
   paternity: 'Paternity Leave',
-  compensatory: 'Compensatory Leave',
-  leave_without_pay: 'Leave Without Pay',
-  other: 'Other',
+  extra_ordinary: 'Extra-ordinary Leave (Leave Without Pay)',
+  fixed_term_contract: 'Leave for Employees on FTC',
+  temporary: 'Leave for Temporary Employees',
+  post_retirement: 'Leave for Post Retirement Engagement',
+  restricted_holiday: 'Restricted Holiday',
+  ood: 'OOD (On Other Duty)',
+  eol_medical: 'EOL (Medical Emergency)',
 };
 
 export const LEAVE_STATUS_LABELS: Record<LeaveStatus, string> = {

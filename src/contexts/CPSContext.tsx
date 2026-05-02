@@ -84,11 +84,9 @@ export function CPSProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Persist entries to localStorage
+  // Persist entries to localStorage (always, including empty state from deletions)
   useEffect(() => {
-    if (entries.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   }, [entries]);
 
   const addEntry = (entry: Omit<CPSEntry, 'id'>) => {

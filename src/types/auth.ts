@@ -1,4 +1,4 @@
-export type UserRole = 'faculty' | 'hod' | 'principal' | 'admin';
+export type UserRole = 'faculty' | 'hod' | 'principal' | 'admin' | 'non_teaching';
 
 export type Department =
   | 'AIML'
@@ -13,9 +13,10 @@ export type Designation =
   | 'Associate Professor'
   | 'Professor'
   | 'Head of Department'
-  | 'Principal';
+  | 'Principal'
+  | 'None';
 
-export type Post = 'Faculty' | 'Head of Department' | 'Principal';
+export type Post = 'Faculty' | 'Head of Department' | 'Principal' | 'Non-Teaching Staff';
 
 export interface Achievement {
   id: string;
@@ -60,12 +61,14 @@ export const DESIGNATIONS: { value: Designation; label: string }[] = [
   { value: 'Professor', label: 'Professor' },
   { value: 'Head of Department', label: 'Head of Department' },
   { value: 'Principal', label: 'Principal' },
+  { value: 'None', label: 'None' },
 ];
 
 export const POSTS: { value: Post; label: string }[] = [
   { value: 'Faculty', label: 'Faculty' },
   { value: 'Head of Department', label: 'Head of Department' },
   { value: 'Principal', label: 'Principal' },
+  { value: 'Non-Teaching Staff', label: 'Non-Teaching Staff' },
 ];
 
 /** Academic designations only – used with Post in signup (1 post + 1 designation). */
@@ -73,6 +76,7 @@ export const DESIGNATIONS_ACADEMIC: { value: Designation; label: string }[] = [
   { value: 'Assistant Professor', label: 'Assistant Professor' },
   { value: 'Associate Professor', label: 'Associate Professor' },
   { value: 'Professor', label: 'Professor' },
+  { value: 'None', label: 'None' },
 ];
 
 export const ROLE_LABELS: Record<UserRole, string> = {
@@ -80,4 +84,5 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   hod: 'Head of Department',
   principal: 'Principal',
   admin: 'Administrator',
+  non_teaching: 'Non-Teaching Staff',
 };

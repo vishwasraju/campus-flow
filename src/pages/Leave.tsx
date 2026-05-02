@@ -72,9 +72,33 @@ const Leave = () => {
   const pendingHOD = user ? getPendingHODLeaves(user.department) : [];
   const pendingPrincipal = getPendingPrincipalLeaves();
 
-  const canApply = currentRole === 'faculty' || currentRole === 'hod';
+  const canApply = currentRole === 'faculty' || currentRole === 'hod' || currentRole === 'non_teaching';
   const isHOD = currentRole === 'hod';
   const isPrincipal = currentRole === 'principal';
+  const isNonTeaching = currentRole === 'non_teaching';
+
+  const LEAVE_RULES: Record<LeaveType, { teaching: number | string; non_teaching: number | string; label: string }> = {
+    casual: { teaching: 15, non_teaching: 15, label: '15 days / year' },
+    special_casual: { teaching: 12, non_teaching: 0, label: 'Teaching: 12 days' },
+    earned: { teaching: 10, non_teaching: 12, label: 'Teaching: 10, Non-Teaching: 12' },
+    maternity: { teaching: 135, non_teaching: 135, label: '135 days (90 full pay)' },
+    paternity: { teaching: 5, non_teaching: 5, label: '5 days' },
+    extra_ordinary: { teaching: 365, non_teaching: 0, label: 'Teaching: Max 1 year' },
+    fixed_term_contract: { teaching: 12, non_teaching: 12, label: '12 days / year' },
+    temporary: { teaching: 12, non_teaching: 12, label: '1 day CL / month' },
+    post_retirement: { teaching: 6, non_teaching: 6, label: '6 days / year' },
+    restricted_holiday: { teaching: 2, non_teaching: 2, label: '2 days / year' },
+    ood: { teaching: 'As per guidelines', non_teaching: 'As per guidelines', label: 'As per guidelines' },
+    eol_medical: { teaching: 10, non_teaching: 10, label: '5 days / semester (medical only)' },
+  };
+
+  // Filter leave types based on role (non-teaching can't apply for some leaves)
+  const availableLeaveTypes = (Object.keys(LEAVE_TYPE_LABELS) as LeaveType[]).filter(t => {
+    if (isNonTeaching) {
+      return LEAVE_RULES[t].non_teaching !== 0;
+    }
+    return true;
+  });
 
   const handleApply = () => {
     if (!user || !startDate || !endDate || !reason.trim()) {
@@ -183,7 +207,7 @@ const Leave = () => {
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Leave Management</h1>
         <p className="text-muted-foreground">
-          Apply for leave and manage approvals. Faculty leaves require HOD and Principal approval; HOD leaves require Principal approval.
+          Apply for leave and manage approvals. Follows the College Leave Provisions.
         </p>
       </div>
 
@@ -256,7 +280,9 @@ const Leave = () => {
             <CardDescription>
               {isHOD
                 ? 'Your leave will be reviewed by the Principal.'
-                : 'Your leave will be reviewed by your HOD.'}
+                : isNonTeaching
+                  ? 'Your leave will be reviewed by your department HOD / Admin.'
+                  : 'Your leave will be reviewed by your HOD.'}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -268,9 +294,14 @@ const Leave = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {(Object.keys(LEAVE_TYPE_LABELS) as LeaveType[]).map((t) => (
+                    {availableLeaveTypes.map((t) => (
                       <SelectItem key={t} value={t}>
-                        {LEAVE_TYPE_LABELS[t]}
+                        <div className="flex flex-col">
+                          <span>{LEAVE_TYPE_LABELS[t]}</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            {isNonTeaching ? LEAVE_RULES[t].non_teaching + (typeof LEAVE_RULES[t].non_teaching === 'number' ? ' days' : '') : LEAVE_RULES[t].teaching + (typeof LEAVE_RULES[t].teaching === 'number' ? ' days' : '')}
+                          </span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
